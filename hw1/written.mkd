@@ -1,0 +1,87 @@
+# 1
+System: COE Cluster (iota)
+model CPU: Intel(R) Xeon(R) CPU X5650 @ 2.67GHz
+cores: 2 sockets, 6 core/socket, 2 threads/core
+memory: 47GB
+operating system: CentOs 7
+
+## HPCG
+1. 45.2548
+2. 45.2565
+3. 45.1685
+4. 45.0477
+5. 45.314
+6. 64.7114 <- Significantly different
+7. 45.212
+8. 45.2815
+9. 45.2651
+10. 45.2562
+Avg: 
+
+## HPL
+1.
+2.
+3.
+4.
+5.
+6.
+7.
+8.
+9.
+10.
+Avg: 
+
+
+# 2
+
+## Sample Sort Using PThreads to sort 5 million numbers
+### Time to Sort
+|   1 thread   |   2 thread  |   4 thread  |   8 thread   |
+|--------------|-------------|-------------|--------------|
+| 4.1s         | 3.77s       | 3.41s       | 3.39s        |
+
+### Speedup
+|   1 thread   |   2 thread  |   4 thread  |   8 thread   |
+|--------------|-------------|-------------|--------------|
+| 1.00         | 1.087       | 1.20        |  1.21        |
+
+Running on coe cluster (iota): 2 socket, 6 core/socket, 2 threads/core
+
+
+
+# 3
+hostname: c2130
+model: Intel(R) Xeon(R) CPU E5-2650 0 @ 2.00GHz
+caches: L1d cache:             32K      -> unique to each core
+        L1i cache:             32K      -> unique to each core
+        L2 cache:              256K     -> unique to each core
+        L3 cache:              20480K   -> shared bewteen all cores
+2 sockets, 8 core per socket, 2 thread per core
+OS: CentOS 7 (`cat /etc/os-release`)
+Network: 82599ES 10-Gigabit SFI/SFP+ Network Connection, Latency: ??? 
+
+# 4
+Trends: 
+- significant dropoff in peak performance from top 3 to rest of the top 10
+    - > 90 petaflops to ~20 petaflops (ignoring Tianhe2A @ 60 petaflops)
+- the two top 10 Chinese based machines have significantly more cores and higher 
+power consumption
+- top 2 machines use IBM POWER9 CPUs with infinaband interconnect with fat tree 
+  topology
+- heterogenous architectures (2 sockets + accelerators)/node
+    - NVIDIA V100: Summit (6), Sierra (4), ABCI (4))
+    - NVIDIA P100: Piaz Daint (1)
+    - Intel Xeon CoProcessors:Tianhe (3)
+- 2 types of nodes
+    - login nodes (low compute. just an entry point)
+    - compute nodes (high power, run computation)
+- interconnects
+    - Infinaband interconnect
+    - Intel Omni Path
+    - Cray Aries interconnect
+- Topologies
+    - Fat Tree Topologies
+    - Dragonfly 
+
+
+`https://abci.ai/en/about_abci/computing_resource.html`
