@@ -16,7 +16,8 @@ operating system: CentOs 7
 8. 45.2815
 9. 45.2651
 10. 45.2562
-Avg: 
+
+Avg: 47.17677
 
 ## HPL
 1.
