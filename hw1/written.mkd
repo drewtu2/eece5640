@@ -19,6 +19,10 @@ operating system: CentOs 7
 
 Avg: 47.17677
 
+Run number 6 took signifcantly longer than the rest of runs. This could be a
+result of someone else logging into the system and contending for compute
+resources by running another program. 
+
 ## HPL
 1.
 2.
@@ -41,13 +45,27 @@ Avg:
 |--------------|-------------|-------------|--------------|
 | 4.1s         | 3.77s       | 3.41s       | 3.39s        |
 
-### Speedup
-|   1 thread   |   2 thread  |   4 thread  |   8 thread   |
-|--------------|-------------|-------------|--------------|
-| 1.00         | 1.087       | 1.20        |  1.21        |
+### Scaling Efficiency 
+| Scaling  |   1 thread   |   2 thread  |   4 thread  |   8 thread   |
+|----------|--------------|-------------|-------------|--------------|
+| Strong   | 100%         | 54.37%      | 30.06%      |  15.12%      |
+| Weak     | 100%         | 108.7%      | 120.2%      |  120.9%      |
 
 Running on coe cluster (iota): 2 socket, 6 core/socket, 2 threads/core
 
+Strong Scaling: fixed total problem size; Efficiency: (t1/N\*tN)\*100%
+Weak Scaling: fixed problem size per processor; Efficiency (t1/tN)\*100%
+
+This implementation does not have strong scaling capabilities. Running the sort
+on a smaller sample size (e.g. 10,000), there is too little performance gain to
+be seen by the timer. This is because the amount of work that can be parallelized
+was too small compared to the total work done to sort the numbers.
+
+The weak scaling capabilities of the system are much better in this case. We see
+an increase in efficiency when we increase the cores from 1 to 2 to 4. The transition
+between 4 and 8 cores is marked by a sharp drop in speedup difference. 
+This drop is unsuprising because the CPU only has 6 cores; therefore, attempting
+to spawn 8 threads will oversubscribe each core leading to a decrease in performance. 
 
 
 # 3
@@ -83,6 +101,5 @@ power consumption
 - Topologies
     - Fat Tree Topologies
     - Dragonfly 
-
 
 `https://abci.ai/en/about_abci/computing_resource.html`
