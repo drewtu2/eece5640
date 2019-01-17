@@ -23,19 +23,27 @@ Run number 6 took signifcantly longer than the rest of runs. This could be a
 result of someone else logging into the system and contending for compute
 resources by running another program. 
 
-## HPL
-1.
-2.
-3.
-4.
-5.
-6.
-7.
-8.
-9.
-10.
-Avg: 
+## CPU Benchmark
+https://github.com/arihant15/Performance-Evaluation-Benchmark
+(1,000,000 FLOP, 1 thread)
+1.  0.210108
+2.  0.209205
+3.  0.209714
+4.  0.208517
+5.  0.209399
+6.  0.209827
+7.  0.208531
+8.  0.209278
+9.  0.209998
+10. 0.209862
+Avg: 0.2094439
 
+Running with the -O3 flag enabled brought run time down to ~.0002 seconds. 
+The O3 flag is short hand for a numer of optimization flags which help reduce
+execution time at the expense of compile time and possibly binary size. The
+increased binary size and aggressive compiler time "optimizations" actually 
+resulted in a decrease in performance over the O2 flag which resulted in a run
+time of .00006s. 
 
 # 2
 
