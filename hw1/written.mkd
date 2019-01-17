@@ -64,8 +64,11 @@ was too small compared to the total work done to sort the numbers.
 The weak scaling capabilities of the system are much better in this case. We see
 an increase in efficiency when we increase the cores from 1 to 2 to 4. The transition
 between 4 and 8 cores is marked by a sharp drop in speedup difference. 
-This drop is unsuprising because the CPU only has 6 cores; therefore, attempting
-to spawn 8 threads will oversubscribe each core leading to a decrease in performance. 
+This drop is unsuprising because each CPU only has 6 cores; therefore, attempting
+to spawn 8 threads will force data to be sent between CPUs  over the high speed
+interconnect between sockets (if using 1 thread per core) OR cause two cores to
+be oversubscribed, hidering performance of 4 threads (2 per core). 
+
 
 
 # 3
@@ -101,5 +104,6 @@ power consumption
 - Topologies
     - Fat Tree Topologies
     - Dragonfly 
+- Utilize SSD's over hard disks
 
 `https://abci.ai/en/about_abci/computing_resource.html`
