@@ -21,7 +21,18 @@ Avg: 47.17677
 
 Run number 6 took signifcantly longer than the rest of runs. This could be a
 result of someone else logging into the system and contending for compute
-resources by running another program. 
+resources by running another program. Because HPCG's out of the tar-file
+make file came preloaded with a number of optimizations, I looked at how removing
+certin operations affected runtime performance. HPCG shipped with the O3 flag 
+already set. By removing the flag, the run time of the program increased to 
+126.17 seconds! Another flag I test removing was the `-funroll-loops` flag. This
+flag attempts to optimize code by replacing loops with statements, allowing the 
+processor to take advantage of pipelining instructions to achieve some level of 
+speedup. The tradeoff here is binary size. The resulting binary size will be 
+increased and more data will need to be pulled through the cache hierarchy,
+potentially hindering performance. In our benchmark, removing the flag caused
+a slight increase in run time to 47.5 seconds, a 2 second increase over the 
+previous runs (ignoring the outlier case). 
 
 ## CPU Benchmark
 https://github.com/arihant15/Performance-Evaluation-Benchmark
@@ -43,7 +54,9 @@ The O3 flag is short hand for a numer of optimization flags which help reduce
 execution time at the expense of compile time and possibly binary size. The
 increased binary size and aggressive compiler time "optimizations" actually 
 resulted in a decrease in performance over the O2 flag which resulted in a run
-time of .00006s. 
+time of .00006s. Seeing the difference in performance of `-funroll-loops` for
+HPCG, I tried applying the same flag to this benchmark but did not see a similar
+increase in performance. 
 
 # 2
 
