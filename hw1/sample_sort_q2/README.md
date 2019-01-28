@@ -5,18 +5,18 @@
 - run `make`
 
 ## Running (Usage)
-`./tssort P input.dat output.dat`
+`./tssort P unsorted.dat output.dat`
 - P: number of threds to use
-- input.dat: a binary file containing the numbers to be sorted
-- output.dat: a binary file with the output of the numbers to be sorted
+- unsorted.dat: a binary file containing the numbers to be sorted
+- output.dat: the name of the file for the sorted numbers to be dumped
 
 `make hw1` will clean the old binary, generate new random data of 10,000,000
-numbers and sort them using 1, 2, 4, and 8 threads
+numbers and sort them using 1, 2, 4, and 8 threads (timed)
 
 ## Generating Numbers (Useage)
 `tools/gen-input N output.dat`
 - N: number of numbers in the randomly generated sample. 
-- output.dat: a file to dump the numbers in
+- output.dat: a filename to dump the numbers in
 
 ## Tools (usage)
 - `tools/print-data data.dat`: 
