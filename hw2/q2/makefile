@@ -1,7 +1,9 @@
 CXX := g++
-CXXFLAGS := 
-LIBS := -lpthreads
+CXXFLAGS := -g3
+LIBS := -lpthread
 
-primes:
-	$(CXX) $(CXXFLAGS) $(LIBS) -o primes primes.cpp
+primes: primes.cpp
+	$(CXX) $(CXXFLAGS) $(LIBS) -o primes primes.cpp ParallelSieve.hpp FindPrimes.hpp
+clean:
+	rm primes
 
