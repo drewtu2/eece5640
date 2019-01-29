@@ -30,9 +30,9 @@ EXECUTABLE := dining_philosophers
 
 # A list of source files for the executable we want to build
 EXEC_SRCS := \
-  $(SRC_DIR)/ParallelSieve.cpp\
-  $(SRC_DIR)/FindPrimes.cpp\
-  $(SRC_DIR)/primes.cpp
+  $(SRC_DIR)/main.cpp\
+  $(SRC_DIR)/Philosopher.cpp\
+  $(SRC_DIR)/table.cpp
 
 # An self generating list of objects for each of the objects needed in the 
 # executable

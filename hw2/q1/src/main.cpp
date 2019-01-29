@@ -7,15 +7,14 @@ using std::endl;
 
 int main() {
 
-    int num_philosphers;
+    int num_philosophers;
 
     cout << "Number of philosophers: ";
     cin >> num_philosophers;
 
-    Table table(num_philosphers);
+    Table table(num_philosophers);
 
     table.run();
 
-    delete table;
     return 0;
 }

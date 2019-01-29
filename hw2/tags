@@ -1,0 +1,79 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+BLOCK_HIGH	q2/include/ParallelSieve.h	13;"	d
+BLOCK_LOW	q2/include/ParallelSieve.h	12;"	d
+BLOCK_OWNER	q2/include/ParallelSieve.h	15;"	d
+BLOCK_SIZE	q2/include/ParallelSieve.h	14;"	d
+CXX	q1/makefile	/^CXX := g++$/;"	m
+CXX	q2/makefile	/^CXX := g++$/;"	m
+CXX_FLAGS	q1/makefile	/^CXX_FLAGS :=$/;"	m
+CXX_FLAGS	q2/makefile	/^CXX_FLAGS :=$/;"	m
+DEBUG_DIR	q1/makefile	/^DEBUG_DIR := debug$/;"	m
+DEBUG_DIR	q2/makefile	/^DEBUG_DIR := debug$/;"	m
+DEBUG_FLAGS	q1/makefile	/^DEBUG_FLAGS := -g3$/;"	m
+DEBUG_FLAGS	q2/makefile	/^DEBUG_FLAGS := -g3$/;"	m
+EXECUTABLE	q1/makefile	/^EXECUTABLE := dining_philosophers$/;"	m
+EXEC_SRCS	q1/makefile	/^EXEC_SRCS := \\$/;"	m
+EXEC_SRCS	q2/makefile	/^EXEC_SRCS := \\$/;"	m
+FindPrimes	q2/include/FindPrimes.h	/^class FindPrimes {$/;"	c
+FindPrimes	q2/src/FindPrimes.cpp	/^FindPrimes::FindPrimes(int num_threads) {$/;"	f	class:FindPrimes
+INCLUDES	q1/makefile	/^INCLUDES := -I include$/;"	m
+INCLUDES	q2/makefile	/^INCLUDES := -I include$/;"	m
+LIBS	q1/makefile	/^LIBS := -lpthread$/;"	m
+LIBS	q2/makefile	/^LIBS := -lpthread$/;"	m
+ParallelSieve	q2/include/ParallelSieve.h	/^class ParallelSieve : public Task {$/;"	c
+ParallelSieve	q2/src/ParallelSieve.cpp	/^ParallelSieve::ParallelSieve ($/;"	f	class:ParallelSieve
+PrimeJob	q2/include/PrimeJob.h	/^    PrimeJob (FindPrimes* instance, $/;"	f	class:PrimeJob
+PrimeJob	q2/include/PrimeJob.h	/^class PrimeJob {$/;"	c
+RELEASE_DIR	q1/makefile	/^RELEASE_DIR := release$/;"	m
+RELEASE_DIR	q2/makefile	/^RELEASE_DIR := release$/;"	m
+RELEASE_FLAGS	q1/makefile	/^RELEASE_FLAGS := -o3$/;"	m
+RELEASE_FLAGS	q2/makefile	/^RELEASE_FLAGS := -o3$/;"	m
+SRC_DIR	q1/makefile	/^SRC_DIR := src$/;"	m
+SRC_DIR	q2/makefile	/^SRC_DIR := src$/;"	m
+Table	q1/include/table.h	/^class Table {$/;"	c
+Task	q2/include/Task.h	/^class Task {$/;"	c
+__FINDPRIMES_H	q2/include/FindPrimes.h	2;"	d
+__PARALLEL_SIEVE	q2/include/ParallelSieve.h	2;"	d
+__PRIMEJOB_H	q2/include/PrimeJob.h	2;"	d
+__TABLE_H	q1/include/table.h	2;"	d
+__TASK_H	q2/include/Task.h	2;"	d
+b1	q2/include/FindPrimes.h	/^    pthread_barrier_t b1;$/;"	m	class:FindPrimes
+b1	q2/include/ParallelSieve.h	/^    pthread_barrier_t* b1;              \/\/ Reference to the first barrier$/;"	m	class:ParallelSieve
+b1	q2/include/PrimeJob.h	/^    pthread_barrier_t* b1;$/;"	m	class:PrimeJob
+b2	q2/include/FindPrimes.h	/^    pthread_barrier_t b2;$/;"	m	class:FindPrimes
+b2	q2/include/ParallelSieve.h	/^    pthread_barrier_t* b2;              \/\/ Reference to the second barrier$/;"	m	class:ParallelSieve
+b2	q2/include/PrimeJob.h	/^    pthread_barrier_t* b2;$/;"	m	class:PrimeJob
+execute	q2/src/ParallelSieve.cpp	/^void* ParallelSieve::execute(void* args) {$/;"	f	class:ParallelSieve
+execute_threads	q2/src/FindPrimes.cpp	/^void* FindPrimes::execute_threads(void* args) {$/;"	f	class:FindPrimes
+forks	q1/include/table.h	/^    vector<pthread_mutex_t> forks;$/;"	m	class:Table
+gen_primes	q2/src/FindPrimes.cpp	/^vector<int> FindPrimes::gen_primes() {$/;"	f	class:FindPrimes
+get_k	q2/src/FindPrimes.cpp	/^int FindPrimes::get_k(){$/;"	f	class:FindPrimes
+get_primes	q2/src/FindPrimes.cpp	/^vector<bool>* FindPrimes::get_primes(){$/;"	f	class:FindPrimes
+instance	q2/include/PrimeJob.h	/^    FindPrimes* instance;$/;"	m	class:PrimeJob
+join_threads	q2/src/FindPrimes.cpp	/^void FindPrimes::join_threads(pthread_t thread) {$/;"	f	class:FindPrimes
+k	q2/include/FindPrimes.h	/^    int k;$/;"	m	class:FindPrimes
+k	q2/include/ParallelSieve.h	/^    int* k;                             \/\/ Reference to the shaared k int$/;"	m	class:ParallelSieve
+main	q1/src/main.cpp	/^int main() {$/;"	f
+main	q2/src/primes.cpp	/^int main() {$/;"	f
+mark_composites	q2/src/ParallelSieve.cpp	/^void ParallelSieve::mark_composites(int k, int low, int high) {$/;"	f	class:ParallelSieve
+n	q2/include/ParallelSieve.h	/^    int n;                              \/\/ Find all primes up to n$/;"	m	class:ParallelSieve
+n	q2/include/PrimeJob.h	/^    int n;$/;"	m	class:PrimeJob
+next_k	q2/src/ParallelSieve.cpp	/^int ParallelSieve::next_k(int current) {$/;"	f	class:ParallelSieve
+num_threads	q2/include/FindPrimes.h	/^    int num_threads;$/;"	m	class:FindPrimes
+num_threads	q2/include/ParallelSieve.h	/^    int num_threads;                    \/\/ Total number of threads being used$/;"	m	class:ParallelSieve
+num_threads	q2/include/PrimeJob.h	/^    int num_threads;$/;"	m	class:PrimeJob
+philosophers	q1/include/table.h	/^    vector<pthread_t> philosophers;$/;"	m	class:Table
+primes	q2/include/FindPrimes.h	/^    vector<bool> primes;$/;"	m	class:FindPrimes
+primes	q2/include/ParallelSieve.h	/^    vector<bool>* primes;               \/\/ Reference to the shared prime vector$/;"	m	class:ParallelSieve
+primes_to_n	q2/src/FindPrimes.cpp	/^vector<int> FindPrimes::primes_to_n(int n) {$/;"	f	class:FindPrimes
+set_k	q2/src/FindPrimes.cpp	/^int FindPrimes::set_k(int new_val){$/;"	f	class:FindPrimes
+set_range	q2/src/ParallelSieve.cpp	/^void ParallelSieve::set_range(int low, int high, bool state) {$/;"	f	class:ParallelSieve
+thread_id	q2/include/ParallelSieve.h	/^    int thread_id;                      \/\/ The thread this task is running on$/;"	m	class:ParallelSieve
+thread_id	q2/include/PrimeJob.h	/^    int thread_id;$/;"	m	class:PrimeJob
+threads	q2/include/FindPrimes.h	/^    pthread_t* threads;$/;"	m	class:FindPrimes
+~FindPrimes	q2/src/FindPrimes.cpp	/^FindPrimes::~FindPrimes() {$/;"	f	class:FindPrimes
