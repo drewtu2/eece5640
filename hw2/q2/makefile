@@ -14,7 +14,7 @@ DEBUG_DIR := debug
 
 # Compilers
 CXX := g++
-CXX_FLAGS :=
+CXXFLAGS := -std=c++11
 
 RELEASE_FLAGS := -o3
 DEBUG_FLAGS := -g3
@@ -61,6 +61,7 @@ debug :\
 # The build sequence for the particular executable we want to build. 
 $(RELEASE_DIR)/primes: $(RELEASE_EXEC_OBJS)
 	@echo $(RELEASE_EXEC_OBJS)
+	@echo $(CXX) $(CXXFLAGS) $(RELEASE_FLAGS) $(INCLUDES) $(LIBS) -o $@ $^
 	$(CXX) $(CXXFLAGS) $(RELEASE_FLAGS) $(INCLUDES) $(LIBS) -o $@ $^
 
 $(DEBUG_DIR)/primes: $(DEBUG_EXEC_OBJS)
