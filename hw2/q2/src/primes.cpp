@@ -27,9 +27,9 @@ int main() {
 
 
     cout << primes.size() << " total primes between 1 and " << max_num << endl;
-    //for(vector<int>::iterator it = primes.begin(); it != primes.end(); it++) {
-    //    cout << *it << endl;
-    //}
+    for(vector<int>::iterator it = primes.begin(); it != primes.end(); it++) {
+        cout << *it << endl;
+    }
 
     cout << "Time to find: " 
         << std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count()
