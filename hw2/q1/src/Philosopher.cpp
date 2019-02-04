@@ -33,6 +33,7 @@ void* Philosopher::execute(void* args) {
         if(*this->forum == this->thread_id) {
             this->pickup_forks();
             cout << "Philosopher " << this->thread_id << ": Time to eat!" << endl;
+            cout << "Philosopher " << this->thread_id << "holds 2 forks. All other forks are down." << endl;
             sleep(2);
             
             // Increment the person allowed to eat, reset if everyone's eaten
