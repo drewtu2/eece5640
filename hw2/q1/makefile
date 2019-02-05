@@ -32,6 +32,8 @@ EXECUTABLE := dining_philosophers
 EXEC_SRCS := \
   $(SRC_DIR)/main.cpp\
   $(SRC_DIR)/Philosopher.cpp\
+  $(SRC_DIR)/SmartPhilosopher.cpp\
+  $(SRC_DIR)/SmartPhilosopherMiddleFork.cpp\
   $(SRC_DIR)/table.cpp
 
 # An self generating list of objects for each of the objects needed in the 
