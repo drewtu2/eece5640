@@ -2,28 +2,41 @@
 **a. Does the number of philosophers impact your solution in any way? How about if
 an even number of forks are used?**
 
-Since my solution has only one philosopher eating at a time, as the number of
+Since my first solution has only one philosopher eating at a time, as the number of
 philosophers increases, the time it takes for every philosopher to eat also
 increases. An even number of forks doesn't affect the solution since each philosopher
 will only eat when it is their turn.
 
-In a more optimal solution where multiple philosophers eat at the same time,
-(for example, every other philosopher eats except the last one who eats alone
-in a third iteration), the extra fork would allow him to eat with the second
-group, thereby allowing each philosopher to eat after no more than 1 iteration
-after the last group to eat.
+In a the Smart Philosopher solution where multiple philosophers eat at the same time,
+(every other philosopher eats except the last one who eats alone in a third iteration),
+the extra fork would allow him to eat with the second group, thereby allowing
+each philosopher to eat after no more than 1 iteration after the last group to eat.
+
+For the smart philosopher solution, increasing the number of philosophers doesn't
+really affect run time since everyone will eat within 3 batches of one another.
+
+In either case, an even number of philosopher's doesn't impact either algorithm.
+
 
 **b. What happens to your solution if we give one philosopher priority over the rest?**
 
 In my solution, we already give a single philosopher priority over the rest. The
 priority such that only one philosopher is permitted to eat at a given point in
 time. This means that every time step, at least one philosopher is always able
-to eat!
+to eat! This prevents deadlocks from occurring in the system even though it serializes
+the eating process.
+
+In the Smart solution, we give priority to all the philosophers assigned to a
+particular group. By regulating the groups, this also prevents deadlocks from forming.
 
 **c. What happens to your solution if we add a fork in the middle of the table?**
 
-Nothing -> the extra fork would go un-utilized because each philosopher attempting
+Naive approach: Nothing -> the extra fork would go un-utilized because each philosopher attempting
 to eat would already have the ability to eat because he has both forks necessary.
+
+Smart approach: This reduces the amount of time to run the algorithm by an entire group.
+The final diner is able to eat along with the second group instead of by himself
+as a third group.
 
 
 **d. Also, discuss who was Edgar Dijkstra, and what is so important about this
@@ -122,4 +135,4 @@ along the processing pipeline that allow multiple sets of instructions to be run
 at the same time while continuing to utilize resources during those latencies.
 This technology was developed by Intel and is used across their processors. For
 example, Iota in the COE clusters has hyperthreading enabled which turns the 12
-physical cores on the system 24 CPUs seen by the OS. 
+physical cores on the system 24 CPUs seen by the OS.
