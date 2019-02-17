@@ -2,7 +2,8 @@
 #define __CHECKDIVISIBLE__
 
 #include <vector>
-#include "pthread.h"
+#include <semaphore.h>
+#include <pthread.h>
 
 using std::vector;
 
@@ -12,6 +13,8 @@ class CheckDivisible {
   int max;
   vector<pthread_t> threads;
   vector<int> divisors;
+  int total;
+  sem_t mutex;
 
  public:
   CheckDivisible();
@@ -19,7 +22,7 @@ class CheckDivisible {
   ~CheckDivisible();
 
   void run();
-  void* thread_helper(void* args);
+  static void* thread_helper(void* args);
 
 };
 

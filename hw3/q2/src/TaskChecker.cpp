@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <semaphore.h>
 
 #include "TaskChecker.h"
 
@@ -8,11 +9,13 @@ using std::cout;
 using std::endl;
 
 TaskChecker::TaskChecker(int id, int lower_bound, int upper_bound, 
-                         vector<int> divisors) {
+                         vector<int> divisors, int* total, sem_t* mutex) {
   this->id = id;
   this->lower_bound = lower_bound;
   this->upper_bound = upper_bound;
   this->divisors = divisors;
+  this->total = total;
+  this->mutex = mutex;
 }
 
 
@@ -26,9 +29,16 @@ void* TaskChecker::execute(void* args) {
 
       if(ii % *iter == 0) {
         count_divisible++;
-        cout << "Thread " << this->id << ii << " is divisible by " << *iter << endl;
+        cout << "Thread " << this->id << " " << ii << " is divisible by " << *iter << endl;
         break;
       }
     }
   }
+
+  // Update global value
+  sem_wait(this->mutex);
+  cout << "Thread " << this->id << " entered mutex." << endl;
+  *this->total = *this->total + count_divisible;
+  sem_post(this->mutex);
+  cout << "Thread " << this->id << " exited mutex." << endl;
 }
