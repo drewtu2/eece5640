@@ -13,7 +13,7 @@ int main()
 {
   double input_d = 1.0;
   float input_f = 1.0;
-  int num_terms = 15;
+  int num_terms = 10;
 
   std::cout << "float: " << f(input_f, num_terms) << std::endl;
   std::cout << "double: " << f(input_d, num_terms) << std::endl;
