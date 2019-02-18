@@ -14,7 +14,7 @@ DEBUG_DIR := debug
 
 # Compilers
 CXX := g++
-CXX_FLAGS :=
+CXXFLAGS := -std=c++11
 
 RELEASE_FLAGS := 
 DEBUG_FLAGS := -g3
@@ -31,9 +31,7 @@ EXECUTABLE := dining_philosophers
 # A list of source files for the executable we want to build
 EXEC_SRCS := \
   $(SRC_DIR)/main.cpp\
-  $(SRC_DIR)/Philosopher.cpp\
-  $(SRC_DIR)/SmartPhilosopher.cpp\
-  $(SRC_DIR)/table.cpp
+ $(SRC_DIR)/Mv.cpp
 
 # An self generating list of objects for each of the objects needed in the 
 # executable

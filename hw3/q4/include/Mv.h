@@ -4,6 +4,8 @@
 #include <vector>
 #include <stdlib.h>
 
+using std::vector;
+
 class MatrixVector {
 
  public:
@@ -11,7 +13,7 @@ class MatrixVector {
    * Multples the given A matrix by the vector B. If the sizes are mismatched,
    * reutnrs NULL. 
    */
-  static vector<int> mul(vector<vector<int>> A, vector<int> b);
+  static vector<int> mul(vector<vector<int> > A, vector<int> b);
   
   /**
    * Creates an Size X 1 vector with each element in the matrix on the range
@@ -23,7 +25,7 @@ class MatrixVector {
    * Creates an Size X Size matrix with each element in the matrix on the range
    * [1, max]
    */
-  static vector<vector<int>> getA(int size, int max);
+  static vector<vector<int> > getA(int size, int max);
 
 };
 

@@ -16,13 +16,13 @@ using std::endl;
  */
 
 vector<int> MatrixVector::mul(vector<vector<int>> A, vector<int> b) {
+  vector<int> result;
   if(A[0].size() != b.size()) {
     cout << "incompatible sizes...." << endl;
-    return NULL;
+    return result;
   }
 
   // Create a vector the size of the input vector b
-  vector<int> result;
   result.resize(b.size());
   int temp_sum = 0;
 
@@ -31,7 +31,7 @@ vector<int> MatrixVector::mul(vector<vector<int>> A, vector<int> b) {
     for(int col = 0; col < b.size(); ++col) {
       temp_sum += A[row][col] * b[col];
     }
-    result[b] = temp_sum;
+    result[row] = temp_sum;
     temp_sum = 0;
   }
 
@@ -44,9 +44,10 @@ vector<int> MatrixVector::getB(int size, int max) {
 
   #pragma omp parallel for 
   for (int ii = 0; ii < size; ++ii) {
-    result[ii] = randn() % max + 1;
+    result[ii] = rand() % max + 1;
   }
 
+  return result;
 }
 
 vector<vector<int>> MatrixVector::getA(int size, int max) {
@@ -57,9 +58,10 @@ vector<vector<int>> MatrixVector::getA(int size, int max) {
   for (int ii = 0; ii < size; ++ii) {
     result[ii].resize(size);
     for (int jj = 0; jj < size; ++jj) {
-      result[ii][jj] = randn() % max + 1;
+      result[ii][jj] = rand() % max + 1;
     }
   }
-
+    
+  return result;
 }
 
