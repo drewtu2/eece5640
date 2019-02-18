@@ -1,0 +1,51 @@
+# Differences:
+
+When calculating f(x) for 2300, the float implementation overflows resulting in 
+NAN. The double implementation is still capable of handling the large numbers 
+required to do 2300^10 and does not overflow resulting in an answer. Its interesting
+to note that after 10 iterations, the Taylor series expansion is still very far
+off for the values of the sin(2300) (resulting in answers on the order of e55).
+
+# Representation in IEEE 754 Format
+```
+Float: s e_8 m_23
+Float: s e_11 m_52
+
+1: 
+
+Float: 
+- s: 0 
+- e: 127
+- m: 0
+
+Double: 
+- s: 0 
+- e: 1023
+- m: 0
+
+2300:
+
+Float: 
+- s: 0
+- e: 138
+- m: 1032192 (0001111110...0) (rpt. 0 until 52 bits)
+
+Double: 
+- s: 0
+- e: 1034
+- m: 554153860399104 (0001111110...0) (rpt. 0 until 52 bits)
+
+-.45:
+
+Float: 
+- s: 1
+- e: -2 -> 127 + -2 = 125
+- m: 1100...1100 = 6710886 (rpt. 1100 until 23 bits)
+
+Double: 
+- s: 1
+- e: -2 -> 1023 + -2 = 1021
+- m: (3602879701896396) = 1100...1100 (rpt. 1100 until 52 bits)
+```
+
+
