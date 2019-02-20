@@ -26,7 +26,7 @@ LIBS := -fopenmp
 # Sources List + Object List Creation
 ###############################################################################
 
-EXECUTABLE := dining_philosophers
+EXECUTABLE := mv_mul
 
 # A list of source files for the executable we want to build
 EXEC_SRCS := \
