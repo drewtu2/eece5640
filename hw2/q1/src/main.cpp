@@ -1,9 +1,14 @@
 #include <iostream>
+#include <chrono>
+
 #include "table.h"
 
 using std::cout;
 using std::cin;
 using std::endl;
+
+typedef std::chrono::high_resolution_clock Clock;
+
 
 int main() {
 
@@ -25,7 +30,15 @@ int main() {
 
     // Actually do stufff
     Table table(num_philosophers);
+
+    auto t1 = Clock::now();
     table.run(philosopher_mode);
+    auto t2 = Clock::now();
+
+    cout << "Time to find: " 
+        << std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count()
+        << " ms" << std::endl;
+
 
     return 0;
 }

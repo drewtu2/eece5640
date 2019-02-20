@@ -14,7 +14,7 @@ DEBUG_DIR := debug
 
 # Compilers
 CXX := g++
-CXX_FLAGS :=
+CXXFLAGS := -std=c++11
 
 RELEASE_FLAGS := -o3
 DEBUG_FLAGS := -g3
