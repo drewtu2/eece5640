@@ -1,0 +1,5 @@
+# Summary: The Impact of Taskyield on the Design of Tasks Communicating Through MPI
+
+`taskyield`: The taskyield construct specifies that the current task can be 
+suspended in favor of execution of a different task.
+

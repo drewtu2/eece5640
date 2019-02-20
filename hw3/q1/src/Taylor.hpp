@@ -13,6 +13,7 @@ template<class T> T Taylor<T>::run(T input, int terms) {
   T result = input;
   int coeff;
   int term;
+  T step_term;
 
   for(int ii = 1; ii < terms; ++ii) {
     if(ii%2 == 0) {
@@ -23,7 +24,11 @@ template<class T> T Taylor<T>::run(T input, int terms) {
 
     term = (2*ii) + 1;
 
-    result += (coeff * pow(input, term)/factorial(term));
+    step_term = (coeff * pow(input, term)/factorial(term));
+
+    std::cout << "Run: " << ii << " step term: " << step_term << std::endl;
+
+    result += step_term;
     
   }
 

@@ -13,7 +13,11 @@ int main()
 {
   double input_d = 1.0;
   float input_f = 1.0;
-  int num_terms = 10;
+  int num_terms = 15;
+
+  Taylor<double> test;
+  std::cout << "Taylor test" << test.run(2300, 11) << std::endl;
+
 
   std::cout << "float: " << f(input_f, num_terms) << std::endl;
   std::cout << "double: " << f(input_d, num_terms) << std::endl;
