@@ -53,28 +53,34 @@ void ParallelGaussian::gaussian_elimination() {
 
     // Solve each row 1 by 1
     for (int ii = 0; ii < num_row; ii++) { 
-        // Normalize the row by the first non zero element
-        temp_A = this->A[ii][ii];
-        //temp_I = this->I[ii][ii];
-        if (temp_A != 1) {
-            for (int col = 0; col < num_col; ++col) {
-                this->A[ii][col] /= temp_A;
-                this->I[ii][col] /= temp_A;
+#pragma omp parallel
+        {
+            // Normalize the row by the first non zero element
+#pragma omp single
+            {
+                temp_A = this->A[ii][ii];
+            }
+            //temp_I = this->I[ii][ii];
+            if (temp_A != 1) {
+#pragma omp for
+                for (int col = 0; col < num_col; ++col) {
+                    this->A[ii][col] /= temp_A;
+                    this->I[ii][col] /= temp_A;
+                }
+            }
+
+            if(ii != num_row - 1) {
+                // Next row
+#pragma omp for
+                for (int jj = ii + 1; jj < num_row; jj++) { 
+                    float ratio = this->A[jj][ii]/this->A[ii][ii]; 
+                    for (int kk = 0; kk < num_row; kk++) { 
+                        this->A[jj][kk] -= (ratio*this->A[ii][kk]); 
+                        this->I[jj][kk] -= (ratio*this->I[ii][kk]); 
+                    } 
+                } 
             }
         }
-        
-        if(ii == num_row - 1) {
-            break;
-        }
-        
-        // Next row
-        for (int jj = ii + 1; jj < num_row; jj++) { 
-            float ratio = this->A[jj][ii]/this->A[ii][ii]; 
-            for (int kk = 0; kk < num_row; kk++) { 
-                this->A[jj][kk] -= (ratio*this->A[ii][kk]); 
-                this->I[jj][kk] -= (ratio*this->I[ii][kk]); 
-            } 
-        } 
     }
 }
 
@@ -83,6 +89,7 @@ void ParallelGaussian::back_substitution() {
 
     // Iterate through each col
     for(int zeroingCol = num_col - 1; zeroingCol >= 1; --zeroingCol) {
+        #pragma omp parallel for private(factor)
         for(int row = zeroingCol - 1; row >= 0; --row) {
             factor = A[row][zeroingCol];
 

@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <chrono>
+#define OMP
 
 #ifdef OMP
 #include <omp.h>
@@ -29,19 +30,20 @@ int main() {
     int size;
     std::cin >> size;
     std::cin >> type;
+    std::cout << "Type: " << type << " Size: " << size << endl;
     float** f = Util::random_m(size);
+    
+    Inverter* invt = Util::inverter_factory(type, f, size, size);
     
     cout << "Starting Matrix" << endl;
     Util::print_f(f, size, size);
-
-    Inverter* invt = Util::inverter_factory(type, f, size, size);
 
     auto t1 = Clock::now();
     invt->run();
     auto t2 = Clock::now();
 
-    //cout << "Inverted Matrix" << endl;
-    //Util::print_f(invt->get(), size, size);
+    cout << "Inverted Matrix" << endl;
+    Util::print_f(invt->get(), size, size);
 
     cout << "Time to find: " 
         << std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count()

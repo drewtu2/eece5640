@@ -20,7 +20,7 @@ RELEASE_FLAGS := -o3
 DEBUG_FLAGS := -g3 
 
 INCLUDES := -I include -I lib/
-LIBS := -lpthread 
+LIBS := -lpthread -fopenmp
 
 ###############################################################################
 # Sources List + Object List Creation
@@ -32,7 +32,8 @@ EXECUTABLE := inversion_benchmark
 EXEC_SRCS := \
   $(SRC_DIR)/main.cpp \
   $(SRC_DIR)/EigenInverse.cpp \
-  $(SRC_DIR)/ParallelGaussian.cpp
+  $(SRC_DIR)/ParallelGaussian.cpp \
+  $(SRC_DIR)/Util.cpp
 
 # An self generating list of objects for each of the objects needed in the 
 # executable
@@ -51,8 +52,8 @@ DEBUG_EXEC_OBJS += $(patsubst $(SRC_DIR)/%.cpp, $(DEBUG_DIR)/%.o, \
 # Build Commands 
 ###############################################################################
 all : \
-  release
-#  debug  
+  release \
+  debug  
 
 release :\
  $(RELEASE_DIR)/$(EXECUTABLE)
