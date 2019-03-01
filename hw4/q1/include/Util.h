@@ -57,10 +57,16 @@ class Util {
      * Factory for an Inverter
      */
     static Inverter* inverter_factory(int type, float** matrix, int rows, int cols) {
+        cout << "\n" << endl;
+        cout << "**********************************"<< endl;
         switch(type) {
             case EIGEN:
+                cout << "Using EigenInverse" << endl;
+                cout << "**********************************"<< endl;
                 return new EigenInverse(matrix, rows, cols);
             case GAUSS:
+                cout << "Using GaussianElimination" << endl;
+                cout << "**********************************"<< endl;
                 return new ParallelGaussian(matrix, rows, cols);
         }
     };
@@ -82,13 +88,17 @@ class Util {
     static float** random_m(int size) {
         Eigen::MatrixXf r = Eigen::MatrixXf::Random(size, size);
         r= r * 100;
-        Eigen::FullPivLU<Eigen::MatrixXf> lu(r);
-        while(!lu.isInvertible()) {
+
+        bool invt = false;
+
+        while(!invt) {
             r = Eigen::MatrixXf::Random(size, size);
             r = r*100;
+            Eigen::FullPivLU<Eigen::MatrixXf> lu(r);
+            invt = lu.isInvertible();
         }
 
-        return Util::to_float(&r, size, size);
+        return Util::to_float(r, size, size);
     };
 
 };

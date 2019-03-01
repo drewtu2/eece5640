@@ -40,8 +40,8 @@ int main() {
     invt->run();
     auto t2 = Clock::now();
 
-    cout << "Inverted Matrix" << endl;
-    Util::print_f(invt->get(), size, size);
+    //cout << "Inverted Matrix" << endl;
+    //Util::print_f(invt->get(), size, size);
 
     cout << "Time to find: " 
         << std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count()
