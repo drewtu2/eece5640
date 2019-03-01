@@ -24,10 +24,11 @@ void EigenInverse::run() {
 }
 
 float** EigenInverse::get() {
+    //std::cout << "num rows: " << this->m.rows() << " cols: " << this->m.cols() << endl;
     float** arr = new float*[this->m.rows()];
-    for(int row = 0; row < 3; ++row) {
+    for(int row = 0; row < this->m.rows(); ++row) {
         arr[row] = new float[row]();
-        for(int col = 0; col < 3; ++col) {
+        for(int col = 0; col < this->m.cols(); ++col) {
             arr[row][col] = this->m(row, col);
         }
     }
