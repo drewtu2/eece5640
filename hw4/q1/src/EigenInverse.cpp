@@ -17,10 +17,14 @@ EigenInverse::EigenInverse(float** matrix, int row, int cols):
         }
       }
 
+      lu = new Eigen::PartialPivLU<Eigen::MatrixXf>(this->m);
+      cout << "Eigen num threads: " << Eigen::nbThreads( ) << endl;
+
     }
 
 void EigenInverse::run() {
-  this->inv = this->m.inverse();
+  //this->inv = this->m.inverse();
+  this->inv = this->lu->inverse();
 }
 
 float** EigenInverse::get() {

@@ -13,6 +13,7 @@ class EigenInverse: public Inverter {
   private:
     Eigen::MatrixXf m;
     Eigen::MatrixXf inv;
+    Eigen::PartialPivLU<Eigen::MatrixXf>* lu;
 
   public:
     EigenInverse(float** m, int row, int cols);

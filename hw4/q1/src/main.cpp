@@ -28,22 +28,25 @@ int main() {
     //float** f = Util::test_a();
     int type = GAUSS;
     int size;
-    std::cin >> size;
-    std::cin >> type;
-    std::cout << "Type: " << type << " Size: " << size << endl;
+    cout << "Size: "; std::cin >> size;
+    cout << "Inversion type (Eigen: 0, Gauss: 1): "; std::cin >> type;
+        cout << "\tType: " << type << endl;
+        cout << "\tSize: " << size << endl;
+        cout << "\tNum threads: " << omp_get_max_threads() << endl;
+    
     float** f = Util::random_m(size);
     
     Inverter* invt = Util::inverter_factory(type, f, size, size);
     
     cout << "Starting Matrix" << endl;
-    Util::print_f(f, size, size);
+    //Util::print_f(f, size, size);
 
     auto t1 = Clock::now();
     invt->run();
     auto t2 = Clock::now();
 
     cout << "Inverted Matrix" << endl;
-    Util::print_f(invt->get(), size, size);
+    //Util::print_f(invt->get(), size, size);
 
     cout << "Time to find: " 
         << std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count()
