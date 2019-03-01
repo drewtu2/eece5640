@@ -4,15 +4,20 @@
 #include <Eigen/Dense>
 #include <vector>
 
+#include "Inverter.h"
+
 using std::vector;
 
-class EigenInverse {
-  
-  Eigen::MatrixXf m;
+class EigenInverse: public Inverter {
+
+  private:
+    Eigen::MatrixXf m;
+    Eigen::MatrixXf inv;
 
   public:
-  EigenInverse(vector<vector<float> > m, int row, int cols);
-  Eigen::MatrixXf run();
+    EigenInverse(float** m, int row, int cols);
+    void run();
+    float** get();
 
 };
 
