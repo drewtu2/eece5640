@@ -8,18 +8,13 @@ using std::cout;
 using std::endl;
 
 int main(int argc, char *argv[]) {
-	int  numtasks, rank, len, rc; 
-	char hostname[MPI_MAX_PROCESSOR_NAME];
+    // initialize MPI  
+    MPI_Init(&argc,&argv);
 
-	// initialize MPI  
-	MPI_Init(&argc,&argv);
+    // Every rank will call this
+    MonteCarloPi mcp(MPI_COMM_WORLD, 1000000);
+    mcp.run();
 
-	MonteCarloPi mcp(MPI_COMM_WORLD, 10);
-	mcp.run();
-
-	// do some work with message passing 
-
-
-	// done with MPI  
-	MPI_Finalize();
+    // done with MPI  
+    MPI_Finalize();
 }

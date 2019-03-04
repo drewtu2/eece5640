@@ -5,7 +5,7 @@
 
 class MonteCarloPi {
   private:
-    MPI_Comm* comm;
+    MPI_Comm comm;
     int rank;
     int num_procs;
 
@@ -18,11 +18,12 @@ class MonteCarloPi {
 
     void throwDart();
     double randZeroToOne();
+    bool checkSuccess(float x, float y);
 
     void computePi();
 
   public:
-    MonteCarloPi(MPI_Comm &comm, int num_throws);
+    MonteCarloPi(MPI_Comm comm, int num_throws);
     void run();
 
 };
