@@ -16,7 +16,7 @@ DEBUG_DIR := debug
 CXX := g++
 CXXFLAGS := -std=c++11
 
-RELEASE_FLAGS := -o3
+RELEASE_FLAGS := -O2 -DNDEBUG -msse2 -ffast-math 
 DEBUG_FLAGS := -g3 
 
 INCLUDES := -I include -I lib/

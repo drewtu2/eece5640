@@ -16,7 +16,7 @@ EigenInverse::EigenInverse(float** matrix, int row, int cols):
           this->m(r, c) = matrix[r][c];
         }
       }
-
+      i = Eigen::MatrixXf::Identity(row, cols);
       lu = new Eigen::PartialPivLU<Eigen::MatrixXf>(this->m);
       cout << "Eigen num threads: " << Eigen::nbThreads( ) << endl;
 
@@ -25,6 +25,7 @@ EigenInverse::EigenInverse(float** matrix, int row, int cols):
 void EigenInverse::run() {
   //this->inv = this->m.inverse();
   this->inv = this->lu->inverse();
+  //this->inv = this->m.llt().solve(this->i);
 }
 
 float** EigenInverse::get() {
