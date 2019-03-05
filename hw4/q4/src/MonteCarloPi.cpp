@@ -11,7 +11,7 @@ MonteCarloPi::MonteCarloPi(MPI_Comm comm, int num_throws) {
     MPI_Comm_rank(comm, &this->rank);
     MPI_Comm_size(comm, &this->num_procs);
     this->comm = comm;
-    this->num_throws = num_throws;
+    this->num_throws = num_throws/this->num_procs;
     this->num_success = 0;
     
     srand (time(NULL) + this->rank);
