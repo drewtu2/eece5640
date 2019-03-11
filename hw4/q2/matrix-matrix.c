@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include<stdlib.h>
 #include <time.h>
-#define M 256 
-#define B 64
+#define B 32
+#define M B*4
 
 double CLOCK() {
         struct timespec t;
