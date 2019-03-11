@@ -21,18 +21,21 @@ using std::endl;
 typedef std::chrono::high_resolution_clock Clock;
 
 int main() {
-#ifdef OMP
-    omp_set_num_threads(omp_get_max_threads());
-#endif
 
     //float** f = Util::test_a();
     int type = GAUSS;
     int size;
+    int num_threads;
     cout << "Size: "; std::cin >> size;
+    cout << "Num threads: "; std::cin >> num_threads;
+
     cout << "Inversion type (Eigen: 0, Gauss: 1): "; std::cin >> type;
         cout << "\tType: " << type << endl;
         cout << "\tSize: " << size << endl;
-        cout << "\tNum threads: " << omp_get_max_threads() << endl;
+        cout << "\tNum threads: " << num_threads << endl;
+#ifdef OMP
+    omp_set_num_threads(num_threads);
+#endif
     
     float** f = Util::random_m(size);
     
