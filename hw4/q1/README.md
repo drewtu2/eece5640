@@ -13,7 +13,8 @@
 
 2. [Parallel Gaussian](parallel_gaussian)
     Of coures... sometimes its the exercise of reinventing the wheel that's 
-    important, not necessarily the wheel itself. This one actally runs faster.
+    important, not necessarily the wheel itself. Performs a gaussian elmination
+    which is parallelized by OpenMP. 
 
 [eigen_library]: https://eigen.tuxfamily.org/dox/group__TutorialLinearAlgebra.html
 [parallel_gaussian]: https://www.cs.rutgers.edu/~venugopa/parallel_summer2012/ge.html
