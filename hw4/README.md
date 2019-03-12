@@ -6,21 +6,25 @@
 | ---------------- | ----------- | -------------- | ------------ |
 | Dense Serial     | 136 ms      | N/A            | N/A          |
 | Dense 24 thread  | 138 ms      | 4.1            | 98.0         |
-| Sparse Serial    | Time        | Strong Scaling | Weak Scaling |
-| Sparse 24 thread | Time        | Strong Scaling | Weak Scaling |
 
 ## Gaussian Elimination
 |                  | Time        | Strong Scaling | Weak Scaling |
 | ---------------- | ----------- | -------------- | ------------ |
 | Dense Serial     | 1821 ms     | N/A            | N/A          |
 | Dense 24 thread  | 281 ms      | 27.0           | 648.0        |
-| Sparse Serial    | Time        | Strong Scaling | Weak Scaling |
-| Sparse 24 thread | Time        | Strong Scaling | Weak Scaling |
 
-**Best Configuration for 1024x1024: Eigen w/ 1 thread**
+**Best Configuration for 1024x1024: Eigen w/ 1 thread inverts 1024x1024 matrix in 136ms**
+**NO SEPARATE IMPLEMENTAITON FOR SPARSE MATRICES. tf, timing is the same**
 
 
 # L1 Cache Size Estimation
+Continue to increment B until the difference in timing results between B=N and 
+B=N+1 are disproportionately different. The disproportionate increase in timing 
+represents the new delays introduced by needing to access memory outside of the
+L1 cache. 
+
+Web: X5650 L1 Cache Size: 384 KB
+
 
 # Monte Carlo Estimations of PI
 Time to Calculate PI using 1e6 Throws
@@ -42,7 +46,3 @@ overhead of communication
 to reduce the likelhood of a cache miss resulting in delays
 - Better "many core architectures" and corresponding programming models 
 allows for a more efficient use of cores (minimize overhead parallel programming)
-
-# Exascale computing (EC)
-
-
