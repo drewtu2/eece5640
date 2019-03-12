@@ -25,6 +25,19 @@ L1 cache.
 
 Web: X5650 L1 Cache Size: 384 KB
 
+Experiments:
+- Set `M = 512`
+
+| Size B        | Time        |
+| ------------- | ----------- |
+| 8             |   629 ms    |
+| 16            |   595 ms    |
+| 32            |   608 ms    |
+
+These results show that the block size that produced the best timing was 16. Based
+on the algorithm being used, we can back calculate to determine what this stride
+length B corresponds to in terms of memory accesses.
+
 
 # Monte Carlo Estimations of PI
 Time to Calculate PI using 1e6 Throws
