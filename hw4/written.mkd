@@ -41,6 +41,7 @@ length B corresponds to in terms of memory accesses.
 
 # Monte Carlo Estimations of PI
 Time to Calculate PI using 1e6 Throws
+
 | Num Processes | Time        |
 | ------------- | ----------- |
 | 1             |   64 ms     |
