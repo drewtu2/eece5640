@@ -11,10 +11,14 @@ class MethodA : public Task {
   int num_classes;
   int first_index;
   int last_index;
+  vector<int> bins;
+  vector<int> results;
+
+  int value_to_bin(int value);
  public:
   MethodA(MPI_COMM comm, vector<int> numbers, int num_classes);
   void run();
-}
+};
 
 
 #endif

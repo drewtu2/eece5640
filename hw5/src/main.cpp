@@ -4,11 +4,14 @@
 #include <cstdlib>
 
 #include "Task.h"
+#include "MethodA.h"
+#include "MethodB.h"
 
-#define MAX_NUM = 1000
+#define MAX_NUM 1000
 
 using std::vector;
 using std::cout;
+using std::cin;
 using std::endl;
 
 Task* TaskCreate(bool method, vector<int> numbers, MPI_Comm comm) {
@@ -30,7 +33,7 @@ Task* TaskCreate(bool method, vector<int> numbers, MPI_Comm comm) {
 vector<int> generateNumbers(int N) {
   vector<int> numbers(N);
 
-  for(int index = 0; index < numbers.length(); ++index) {
+  for(int index = 0; index < numbers.size(); ++index) {
     numbers[index] = rand() % MAX_NUM + 1;
   }
 
@@ -50,8 +53,8 @@ int main(int argc, char *argv[]) {
 
   MPI_Init(&argc, &argv);
   
-  Task::Task* histogram = TaskCreate(method, numbers, MPI_COMM_WORLD);
-  Task->run();
+  Task* histogram = TaskCreate(method, numbers, MPI_COMM_WORLD);
+  histogram->run();
 
   MPI_Finalize();
 
