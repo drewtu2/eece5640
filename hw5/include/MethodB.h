@@ -14,7 +14,7 @@ class MethodB : public Task {
   bool value_in_bin(int value);
 
  public:
-  MethodB(MPI_COMM comm, vector<int> numbers);
+  MethodB(MPI_Comm comm, vector<int> numbers);
   void run();
 };
 

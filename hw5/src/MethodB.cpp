@@ -7,15 +7,15 @@ using std::cout;
 using std::endl;
 
 
-MethodB::MethodB(MPI_COMM comm, vector<int> numbers)
+MethodB::MethodB(MPI_Comm comm, vector<int> numbers)
 {
   this->comm = comm;
   this->max_num = 1000;
   this->nums = numbers;
   this->count = 0;
 
-  MPI_Comm_rank(this->comm, this->comm_rank);
-  MPI_Comm_rank(this->comm, this->comm_size);
+  MPI_Comm_rank(this->comm, &this->comm_rank);
+  MPI_Comm_rank(this->comm, &this->comm_size);
 
   this->num_classes = this->comm_size;
 

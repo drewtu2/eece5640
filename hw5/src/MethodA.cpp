@@ -7,7 +7,7 @@ using std::cout;
 using std::endl;
 
 
-MethodA::MethodA(MPI_COMM comm, vector<int> numbers, int num_classes) 
+MethodA::MethodA(MPI_Comm comm, vector<int> numbers, int num_classes) 
   : bins(num_classes),
     results(num_classes)
 {
@@ -17,8 +17,8 @@ MethodA::MethodA(MPI_COMM comm, vector<int> numbers, int num_classes)
   this->nums = numbers;
 
 
-  MPI_Comm_rank(this->comm, this->comm_rank);
-  MPI_Comm_rank(this->comm, this->comm_size);
+  MPI_Comm_rank(this->comm, &this->comm_rank);
+  MPI_Comm_rank(this->comm, &this->comm_size);
 
   int nums_size = numbers.size() / this->comm_size;   // # of #'s we're responsible for
   int class_size = this->max_num / this->num_classes; // The size of each class

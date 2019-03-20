@@ -11,7 +11,7 @@ using std::vector;
 class Task {
  protected:
   vector<int> nums; 
-  MPI_COMM comm;
+  MPI_Comm comm;
   int comm_rank;
   int comm_size;
   int max_num;

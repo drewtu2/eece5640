@@ -16,7 +16,7 @@ class MethodA : public Task {
 
   int value_to_bin(int value);
  public:
-  MethodA(MPI_COMM comm, vector<int> numbers, int num_classes);
+  MethodA(MPI_Comm comm, vector<int> numbers, int num_classes);
   void run();
 };
 
