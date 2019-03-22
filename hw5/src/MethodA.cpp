@@ -16,7 +16,6 @@ using std::endl;
     this->max_num = 1000;
     this->nums = numbers;
 
-
     MPI_Comm_rank(this->comm, &this->comm_rank);
     MPI_Comm_size(this->comm, &this->comm_size);
 
@@ -25,22 +24,25 @@ using std::endl;
 
     // First and last indices we're responsible for...
     this->first_index = this->comm_rank * nums_size;
-    this->last_index = (this->first_index + 1) * nums_size;
+    this->last_index = (this->comm_rank + 1) * nums_size;
     this->last_index = std::min(this->last_index, (int) numbers.size());
+
+    if(this->comm_rank == 0) {
+        cout << "Running with Method A" << endl;
+    }
 }
 
 void MethodA::run() {
-
-    if(this->comm_rank == 9) {
-        cout << "Firs: " << this->first_index << "\tLast: " << this->last_index << endl;
-    }
 
     for(int ii = this->first_index; ii < this->last_index; ++ii) {
         bins[value_to_bin(nums[ii])]++;
     }
 
     MPI_Reduce(this->bins.data(), this->results.data(), (int)this->bins.size(),
-                 MPI_INT, MPI_SUM, 0, this->comm);
+            MPI_INT, MPI_SUM, 0, this->comm);
+}
+
+void MethodA::print_results() {
 
     int min, max, sum=0;
     if(this->comm_rank == 0) {
@@ -50,8 +52,9 @@ void MethodA::run() {
             sum += results[idx];
             cout << "(" << min << ", " << max << "): " << results[idx] << endl;
         }
+        cout << "Sum: " << sum << endl;
     }
-    return;
+
 }
 
 int MethodA::value_to_bin(int value) {

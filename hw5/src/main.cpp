@@ -14,53 +14,83 @@ using std::cout;
 using std::cin;
 using std::endl;
 
-Task* TaskCreate(bool method, vector<int> numbers, MPI_Comm comm) {
-  if(method) {
+typedef struct config {
+    bool method;
+    int size;
     int num_classes;
-    //cout << "\nNumber of classes? ";
-    //cin >> num_classes;
-    //cout << endl;
-    return new MethodA(comm, numbers, 5);
-  }
+} config;
 
-  return new MethodB(comm, numbers);
+Task* TaskCreate(int method, vector<int> numbers, MPI_Comm comm, int num_classes) {
+    // If method == 1, return A
+    if(method) {
+        return new MethodA(comm, numbers, num_classes);
+    }
 
+    return new MethodB(comm, numbers);
 }
 
 /**
  * Generates a vector of N random ints
  */
 vector<int> generateNumbers(int N) {
-  vector<int> numbers(N);
+    vector<int> numbers(N);
 
-  for(int index = 0; index < numbers.size(); ++index) {
-    numbers[index] = rand() % MAX_NUM;
-  }
-    
-  return numbers;
+    for(int index = 0; index < numbers.size(); ++index) {
+        numbers[index] = rand() % MAX_NUM;
+    }
+
+    return numbers;
 }
 
+Task* init() {
+    int method;
+    int rank;
+    int size;
+    int num_classes;
+    vector<int> numbers;
+    srand(time(NULL));
+
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+
+    // Collect input on rank 0
+    if(rank == 0) {
+        cout << "Method? A = 1, B = 0: ";
+        cin >>  method;
+        cout << endl << "How many numbers?: ";
+        cin >>  size;
+
+        if(method) {
+            cout << "\nNumber of classes? ";
+            cin >> num_classes;
+            cout << endl;
+        }
+        numbers = generateNumbers(size);
+    } 
+
+    // Broadcast stuff so that all ranks...
+    MPI_Bcast(&method, 1, MPI_INT, 0, MPI_COMM_WORLD);
+    MPI_Bcast(&size, 1, MPI_INT, 0, MPI_COMM_WORLD);
+    MPI_Bcast(&num_classes, 1, MPI_INT, 0, MPI_COMM_WORLD);
+
+    // Resize the vectors on all of the other ranks..
+    if(rank != 0) {
+        numbers.resize(size);
+    }
+
+    // Send The generated numbers
+    MPI_Bcast(&numbers.front(), numbers.size(), MPI_INT, 0, MPI_COMM_WORLD);
+
+    return TaskCreate(method, numbers, MPI_COMM_WORLD, num_classes);
+}
+
+
 int main(int argc, char *argv[]) {
-  bool method;
-  int size;
+    MPI_Init(&argc, &argv);
 
-  srand(time(NULL));
+    Task* histogram = init();
+    histogram->run();
+    histogram->print_results();
+    MPI_Finalize();
 
-  //cout << "Method? A = 0, B = 1: ";
-  //cin >>  method;
-  //cout << endl << "How many numbers?: ";
-  //cin >>  size;
-  method = 1;
-  size = 1000;
-
-  vector<int> numbers = generateNumbers(size);
-
-  MPI_Init(&argc, &argv);
-  
-  Task* histogram = TaskCreate(method, numbers, MPI_COMM_WORLD);
-  histogram->run();
-
-  MPI_Finalize();
-
-  return 0;
+    return 0;
 }

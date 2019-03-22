@@ -18,6 +18,7 @@ class MethodA : public Task {
  public:
   MethodA(MPI_Comm comm, vector<int> numbers, int num_classes);
   void run();
+  void print_results();
 };
 
 

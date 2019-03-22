@@ -18,6 +18,7 @@ class Task {
 
  public:
   virtual void run() = 0;
+  virtual void print_results() = 0;
 
 
 };

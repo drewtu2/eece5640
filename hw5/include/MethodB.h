@@ -19,6 +19,7 @@ class MethodB : public Task {
  public:
   MethodB(MPI_Comm comm, vector<int> numbers);
   void run();
+  void print_results();
 };
 
 
