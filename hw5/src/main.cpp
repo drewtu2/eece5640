@@ -44,10 +44,12 @@ int main(int argc, char *argv[]) {
   bool method;
   int size;
 
-  cout << "Method? A = 0, B = 1: ";
-  cin >>  method;
-  cout << endl << "How many numbers?: ";
-  cin >>  size;
+  //cout << "Method? A = 0, B = 1: ";
+  //cin >>  method;
+  //cout << endl << "How many numbers?: ";
+  //cin >>  size;
+  method = 0;
+  size = 1000;
 
   vector<int> numbers = generateNumbers(size);
 
