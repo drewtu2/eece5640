@@ -1,0 +1,45 @@
+# CUDA Makefile
+NVCC := nvcc
+EXECUTABLE := hello
+
+# Files
+RELEASE_DIR := release
+SRC_DIR := src
+EXEC_SRCS := \
+  $(SRC_DIR)/oak_ridge_vector_add.cu
+
+# 
+release :\
+	$(RELEASE_DIR)/$(EXECUTABLE)
+
+
+# Autogen Stuff
+RELEASE_EXEC_OBJS += $(patsubst $(SRC_DIR)/%.cu, $(RELEASE_DIR)/%.o, \
+	     $(filter $(SRC_DIR)/%.cu, $(EXEC_SRCS)))
+
+# The build sequence for the particular executable we want to build. 
+$(RELEASE_DIR)/$(EXECUTABLE): $(RELEASE_EXEC_OBJS)
+	@echo $(RELEASE_EXEC_OBJS)
+	$(NVCC) $(CXXFLAGS) $(RELEASE_FLAGS) $(INCLUDES) $(LIBS) -o $@ $^
+
+$(RELEASE_DIR)/%.o : $(SRC_DIR)/%.cu | release_directory
+	@echo $(RELEASE_EXEC_OBJS)
+	$(NVCC) $(CXXFLAGS) $(RELEASE_FLAGS) $(INCLUDES) $(LIBS) -c $< -o $@
+
+# Autogen dependencies
+$(RELEASE_DIR)/%.d : $(SRC_DIR)/%.cu
+	@echo "Running Autogen..."
+	@set -e;\
+	rm -f $@;\
+	$(NVCC) -MM $(CXXFLAGS) $(INCLUDES) $(LIBS) $< > $@.$$$$;\
+	sed 's,\($*\)\.o[ :]*,$(RELEASE_DIR)/\1.o $@ : ,g' < $@.$$$$ > $@; \
+	rm -f $@.$$$$
+
+release_directory :
+	@echo "Make Release Dir"
+	@mkdir -p $(RELEASE_DIR)
+
+clean : 
+	rm -rf release
+
+-include $(OBJS:.o=.d)
