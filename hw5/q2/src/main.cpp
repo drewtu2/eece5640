@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <cstdlib>
+#include <chrono>
 
 #include "Task.h"
 #include "MethodCuda.h"
@@ -11,6 +12,8 @@ using std::vector;
 using std::cout;
 using std::cin;
 using std::endl;
+typedef std::chrono::high_resolution_clock Clock;
+
 
 typedef struct config {
     bool method;
@@ -52,7 +55,12 @@ Task* init() {
 
 int main(int argc, char *argv[]) {
     Task* histogram = init();
+    auto t1 = Clock::now();
     histogram->run();
+    auto t2 = Clock::now();
+    cout << "Time to find: " 
+        << std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count()
+        << " ms" << std::endl;
     histogram->print_results();
 
     return 0;

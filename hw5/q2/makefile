@@ -16,6 +16,7 @@ DEBUG_DIR := debug
 CXX := g++
 NVCC := nvcc
 CXXFLAGS := -std=c++11
+NVCC_FLAGS := -std=c++11
 
 RELEASE_FLAGS := -o3
 DEBUG_FLAGS := -g3 
@@ -69,11 +70,11 @@ debug :\
 # The build sequence for the particular executable we want to build. 
 $(RELEASE_DIR)/$(EXECUTABLE): $(RELEASE_EXEC_OBJS)
 	@echo $(RELEASE_EXEC_OBJS)
-	$(NVCC) $(INCLUDES) $(LIBS) -o $@ $^
+	$(NVCC) $(NVCC_FLAGS) $(INCLUDES) $(LIBS) -o $@ $^
 
 $(DEBUG_DIR)/$(EXECUTABLE): $(DEBUG_EXEC_OBJS)
 	@echo $(DEBUG_EXEC_OBJS)
-	$(NVCC)  $(INCLUDES) $(LIBS) -o $@ $^
+	$(NVCC) $(NVCC_FLAGS) $(INCLUDES) $(LIBS) -o $@ $^
 
 clean :
 	@rm -rf $(DEBUG_DIR) $(RELEASE_DIR) 
@@ -88,12 +89,12 @@ $(RELEASE_DIR)/%.o : $(SRC_DIR)/%.cpp | release_directory
 	$(CXX) $(CXXFLAGS) $(RELEASE_FLAGS) $(INCLUDES) $(LIBS) -c $< -o $@
 $(RELEASE_DIR)/%.o : $(SRC_DIR)/%.cu | release_directory
 	@echo $(RELEASE_EXEC_OBJS)
-	$(NVCC) $(INCLUDES) $(LIBS) -c $< -o $@
+	$(NVCC) $(NVCC_FLAGS) $(INCLUDES) $(LIBS) -c $< -o $@
 
 $(DEBUG_DIR)/%.o : $(SRC_DIR)/%.cpp | debug_directory
 	$(CXX) $(CXXFLAGS) $(DEBUG_FLAGS) $(INCLUDES) $(LIBS) -c $< -o $@
 $(DEBUG_DIR)/%.o : $(SRC_DIR)/%.cu | debug_directory
-	$(NVCC) $(INCLUDES) $(LIBS) -c $< -o $@
+	$(NVCC) $(NVCC_FLAGS) $(INCLUDES) $(LIBS) -c $< -o $@
 
 # Autogen dependencies
 $(RELEASE_DIR)/%.d : $(SRC_DIR)/%.cpp 
@@ -108,7 +109,7 @@ $(RELEASE_DIR)/%.d : $(SRC_DIR)/%.cu
 	@echo "Running Autogen..."
 	@set -e;\
 	rm -f $@;\
-	$(NVCC) -MM $(LIBS) $< > $@.$$$$;\
+	$(NVCC) -MM $(NVCC_FLAGS) $(LIBS) $< > $@.$$$$;\
 	sed 's,\($*\)\.o[ :]*,$(RELEASE_DIR)/\1.o $@ : ,g' < $@.$$$$ > $@; \
 	rm -f $@.$$$$
 
@@ -124,7 +125,7 @@ $(DEBUG_DIR)/%.d : $(SRC_DIR)/%.cu
 	@echo "Running Autogen..."
 	@set -e;\
 	rm -f $@;\
-	$(NVCC) -MM $(INCLUDES) $(LIBS) $< > $@.$$$$;\
+	$(NVCC) -MM $(NVCC_FLAGS) $(INCLUDES) $(LIBS) $< > $@.$$$$;\
 	sed 's,\($*\)\.o[ :]*,$(DEBUG_DIR)/\1.o $@ : ,g' < $@.$$$$ > $@; \
 	rm -f $@.$$$$
 

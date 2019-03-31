@@ -1,11 +1,13 @@
 #include <vector>
 #include <iostream>
+#include <chrono>
 
 #include "CudaFx.h"
 
 using std::vector;
 using std::cout;
 using std::endl;
+typedef std::chrono::high_resolution_clock Clock;
 
 __host__ void cuda_run(vector<int>* nums, vector<int>* results, int num_classes, int max_num) {
     // Calculate bytes needed for input and output
@@ -14,8 +16,14 @@ __host__ void cuda_run(vector<int>* nums, vector<int>* results, int num_classes,
 
     int* d_input, *d_output;
 
-    cout << "bytes in: " << bytes_in << endl;
-    cout << "bytes out: " << bytes_out << endl;
+    int blockSize = 256;
+    int gridSize = (int)ceil(nums->size()/(float)blockSize); //TODO: Choose these more wisely...
+    
+    //cout << "bytes in: " << bytes_in << endl;
+    //cout << "bytes out: " << bytes_out << endl;
+    //cout << "Size: " << nums->size() << endl;
+    //cout << "Using " << gridSize << " grids" << endl;
+    //cout << "Total Threads: " << gridSize*blockSize << endl;
 
     // Malloc the necessary bytes
     cudaMalloc(&(d_input), bytes_in);
@@ -24,11 +32,14 @@ __host__ void cuda_run(vector<int>* nums, vector<int>* results, int num_classes,
     // Copy to data to device
     cudaMemcpy(d_input, nums->data(), bytes_in, cudaMemcpyHostToDevice);
 
-    int gridSize = 4;           //TODO: Choose these more wisely...
-    int blockSize = 256;
-    
     // Grid Size and block size yadda yadda
+    auto t1 = Clock::now();
     bin<<<gridSize, blockSize>>>(d_output, d_input, nums->size(), num_classes, max_num);
+    auto t2 = Clock::now();
+    
+    cout << "Time to run kernel: " 
+        << std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count()
+        << " ms" << std::endl;
     
     // Copy results from device
     cudaMemcpy(results->data(), d_output, bytes_out, cudaMemcpyDeviceToHost);

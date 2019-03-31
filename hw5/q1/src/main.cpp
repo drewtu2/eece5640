@@ -2,6 +2,7 @@
 #include <vector>
 #include <mpi.h>
 #include <cstdlib>
+#include <chrono>
 
 #include "Task.h"
 #include "MethodA.h"
@@ -13,6 +14,8 @@ using std::vector;
 using std::cout;
 using std::cin;
 using std::endl;
+typedef std::chrono::high_resolution_clock Clock;
+
 
 typedef struct config {
     bool method;
@@ -86,9 +89,29 @@ Task* init() {
 
 int main(int argc, char *argv[]) {
     MPI_Init(&argc, &argv);
+    int rank;
+    int comm_size;
+    std::chrono::high_resolution_clock::time_point t1;
+    std::chrono::high_resolution_clock::time_point t2;
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+    MPI_Comm_size(MPI_COMM_WORLD, &comm_size);
 
     Task* histogram = init();
+
+    MPI_Barrier(MPI_COMM_WORLD);
+    if(rank == 0) {
+        cout << "Running with " << comm_size << endl;
+        t1 = Clock::now();
+    }
     histogram->run();
+    MPI_Barrier(MPI_COMM_WORLD);
+    
+    if(rank == 0) {
+        t2 = Clock::now();
+        cout << "Time to find: " 
+             << std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count()
+             << " us" << std::endl;
+    }
     histogram->print_results();
     MPI_Finalize();
 
