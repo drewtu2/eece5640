@@ -52,7 +52,7 @@ int main( int argc, const char** argv ) {
     start_gpu = CLOCK();
 
     // New mat has inverted height/width
-    Mat transpose = Mat::zeros(width, height, CV_8U);
+    Mat transpose = Mat::zeros(height, width, CV_8U);
 
     gpu_function((unsigned char *) input_image.data, 
                            (unsigned char *) transpose.data, 
