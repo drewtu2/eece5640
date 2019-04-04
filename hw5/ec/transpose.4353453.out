@@ -1,0 +1,1 @@
+/var/spool/slurm/d/job4353453/slurm_script: line 15: 48679 Segmentation fault      ./sobel input/leopard.jpg out_leopard.jpg

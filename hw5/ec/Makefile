@@ -30,7 +30,7 @@ debug: NVCCFLAGS += -g -G
 debug: all
 
 # The build target executable:
-TARGET = transpose
+TARGET = sobel
 
 build: $(TARGET)
 

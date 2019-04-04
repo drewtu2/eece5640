@@ -9,7 +9,8 @@
 #SBATCH --gres=gpu:k20:1
 #SBATCH --output=transpose.%j.out
 
-cd /scratch/$USER/eece5640/transpose/
+#cd /scratch/$USER/eece5640/transpose/
+cd /home/tu.a/eece5640/hw5/ec
 
-./transpose ../input/leopard.jpg out_leopard.jpg
+./sobel input/leopard.jpg out_leopard.jpg
 
