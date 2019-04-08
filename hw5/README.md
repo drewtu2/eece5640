@@ -40,19 +40,20 @@
 | 8     | 100,000    | 5         | 2167 us|
 
 ## Cuda A - Variable N
-| # Elements  | # Classes | Total Time (w/ Copy) | Run Time (Kernel Only) |
-|-------------|-----------|----------------------|------------------------|
-| 10,000      | 5         | 1205 ms              | 252 us                 |
-| 100,000     | 5         | 1172 ms              | 300 us                 |
-| 1,000,000   | 5         | 1142 ms              | 400 us                 |
-| 10,000,000  | 5         | 1144 ms              | 448 us                 |
-| 100,000,000 | 5         | 1282 ms              | 651 us                 |
+| # Elements  | # Classes |  Run Time               |
+|-------------|-----------|-------------------------|
+| 10,000      | 5         |  252 us                 |
+| 100,000     | 5         |  300 us                 |
+| 1,000,000   | 5         |  400 us                 |
+| 10,000,000  | 5         |  448 us                 |
+| 100,000,000 | 5         |  651 us                 |
 
 ## Analysis
 Effect of...
 
 **Variable Classes:** 
-![Method A Runtime](method_a_runtime.png)
+
+![Method A Runtime](figures/method_a_runtime.png)
 
 Demonstrated by the variable classes experiment run with method A. 
 Having more classes resulted in long run times. There are two likely explanations 
@@ -63,8 +64,10 @@ for this:
     evern more complicated than before. 
 
 **Variable Problem Size:** 
-![Method A vs CUDA](method_a_vs_cuda.png)
-![Method B with variable N](method_b.png)
+
+![Method A vs CUDA](figures/method_a_vs_cuda.png)
+
+![Method B with variable N](figures/method_b.png)
 
 Demonstrated by the **8 Node Variable N** test case run with method A.
 With a larger N, the problem size grows and thus, we should expect the run time
@@ -77,7 +80,8 @@ took advantage of idle hardware. However, the 10x jumps in problem size after
 data. 
 
 **Method A vs. Method B**:
-![Method A vs Method B](a_vs_b.png)
+
+![Method A vs Method B](figures/a_vs_b.png)
 
 One of the most interesting questions to consider is how method A differs 
 from the method B in timing. 
@@ -94,33 +98,53 @@ any node before being sorted. Comparitively, in method B, each piece of data is
 touched by EVERY SINGLE NODE.
 
 **Method A vs. CUDA**
-![Method A vs CUDA](method_a_vs_cuda.png)
+
+![Method A vs CUDA](figures/method_a_vs_cuda.png)
 
 Another highly interesting question to consider is how well a CUDA implementation 
 of binning performs against the algorithm discussed in method A. Intutively,
 the operations performed to "bin" data" is very simple, simply determining where 
-each piece of data falls within a set of buckets. Looking at the total run time
-of the CUDA implementation, we see somewhat dreadful results, taking over 1s to
-run on a problem size of 10k entries, much slower than the sub ms results enjoyed
-by the MPI implementation. However, we notice the run time remains fairly constant
-from problem size to problem size, while the run time from Method A increases
-linearly. Based on our projections, it'd be safe to assume that at a problem size
-of the next order of magnitude (1e9), we'd expect to see the CUDA version outperform
-the MPI version. 
+each piece of data falls within a set of buckets. We notice the run time remains 
+fairly constant from problem size to problem size, while the run time from Method 
+A increases linearly. 
 
-Looking into the problem further, we can evaluate why the CUDA version performs
-so poorly compared to the MPI counterpart. By evaluating the kernel runtime itself,
-we find the kernel takes a relatively short time to run - only on the order of 100's 
-of us. This result is incredibily important because it shows the majority of the 
-the time associated with the CUDA implementation has to do with transferring the
-data from the host to the device. There are 3 expensive operations that need to 
-take place in order for the kernel to run. 
-
-1. cudaMalloc
-2. cudaMemcpy (host to device)
-3. cudaMemcpy (device to host)
-
-These memory operations are often expensive and are likely one of the leading
-cause of the CUDA high run time implementation. 
+The following two images show an interesting result. In the first image, we see
+the profile data from a binning of 1000 elements. Here, we see the binning takes 
+longer than the copy to the device. However as the problem size scales to 
+100,000,000 elements, we see that suddenly the memcpy takes a longer time, indicating
+that we've hit a memory bottleneck!
+![CUDA Bin Prof 1000 elements](figures/cuda_bin_prof.png)
+![CUDA Bin Prof 100,000,000 elements](figures/cuda_100000000_prof.png)
 
 
+# Pascal P100 vs Volta V100
+Pascal:
+- NVLink: 160 GB/s bidirectional GPU to GPU communication
+- HBM2: "Stacked High Bandwidth Memory"
+- Unified Memory: single virtual memory space for CPU and GPU
+- Preemptive compute: preemptive compute allows instructions to be interrupted
+at the instruction level
+- 16nm FinFET
+- Uses SM and CUDA Cores
+- Uses FP16 instead of the more widely used FP32/FP64 - doubles performance and
+increases accuracy (don't want very high precision values for deep learning)
+- **Goal: greatly increase memory bandwidth and reduce communication overheads to 
+improve throughput**
+
+V100:
+- Introduction of Tensor Cores alongside CUDA Cores
+- Targeted towards DL/ML
+- Larger L1 Cache than the P100
+- V100: unified shared memory/L1 cache
+    - low cache hit latency
+- Independent thread scheduling allows for in-warp synchronization
+- **Tensor cores** offers multiply and add operations for greater efficiency
+breaks away from the P100 focus on SM/CUDA cores
+- improved unified memory
+- improved HBM2 and NVLink performance
+- **Goal: EXTREME performance on deep learning applications.**
+
+# EC
+![Original Image](ec/input/leopard.jpg)
+![Sobel Image](ec/edge.jpg)
+![Profiling](figures/sobel_prof.png)
