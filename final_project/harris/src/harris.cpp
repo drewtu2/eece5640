@@ -45,7 +45,6 @@ void detect(InputArray image, std::vector<KeyPoint> &keypoints, InputArray mask=
 	// Response
 	Mat response = idet - this->f * (itrace * itrace);
 
-
 	// Extract keyponts from image
 	int channels = response.channels();
 	int nRows = response.rows;
@@ -68,6 +67,4 @@ void detect(InputArray image, std::vector<KeyPoint> &keypoints, InputArray mask=
 			}
 		}
 	}
-
-	return I;
 }
