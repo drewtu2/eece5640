@@ -33,13 +33,13 @@ int main( int argc, const char** argv ) {
     unsigned int height = input_image.rows;
     unsigned int  width = input_image.cols;
     
-    HarrisCorner* cpu = HarrisCorner::create();
+    HarrisCorner* cpu = HarrisCorner::create(0.04f, 1e5f);
 
     // New mat has height/width the same as the old
     Mat image_corners = Mat::zeros(height, width, CV_8U);
     
     cout << "writing output image " << argv[2] << endl;
-    imwrite (argv[2], transpose);
+    imwrite (argv[2], image_corners);
 
     return 0;
     

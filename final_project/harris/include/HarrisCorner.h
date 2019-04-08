@@ -2,6 +2,14 @@
 #define __HARRIS_CORNER_H__
 
 #include <opencv2/features2d.hpp>
+#include <opencv2/core/mat.hpp>
+
+using cv::InputArray;
+using cv::InputArrayOfArrays;
+using cv::OutputArray;
+using cv::OutputArrayOfArrays;
+using cv::KeyPoint;
+using cv::noArray;
 
 class HarrisCorner {
 
@@ -24,12 +32,12 @@ class HarrisCorner {
   /**
    * Default constructor for Harris Corner Detector
    */
-  HarrisCorner HarrisCorner();
+  HarrisCorner();
 
   /**
    * Choose different k constructor for Harris Corner Detector
    */
-  HarrisCorner HarrisCorner(float k, float threshold);
+  HarrisCorner(float k, float threshold);
 
 
   /**
@@ -63,8 +71,8 @@ class HarrisCorner {
    * @param descriptors: an array of descriptors for each keypoint. an array for
    * each image
    */
-  void compute(InputArrayofArrays images, std::vector<std::vector<KeyPoint>> &keypoints, OutputArrayOfArrays descriptors);
+  void compute(InputArrayOfArrays images, std::vector<std::vector<KeyPoint>> &keypoints, OutputArrayOfArrays descriptors);
 
-}
+};
 
 #endif
