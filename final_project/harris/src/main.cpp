@@ -41,7 +41,7 @@ int main( int argc, const char** argv ) {
     std::vector<cv::KeyPoint> kps;
     cpu->detect(input_image, kps);
 
-    drawKeypoints(input_image, kps, image_corners);
+    drawKeypoints(input_image, kps, image_corners, Scalar( 0, 0, 255));
     
     cout << "writing output image " << argv[2] << endl;
     imwrite (argv[2], image_corners);
