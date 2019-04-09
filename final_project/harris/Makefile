@@ -29,7 +29,13 @@ DEBUG_FLAGS := -g3
 #opencvLocation = /usr/local/opencv
 opencvLIB= -L/shared/apps/opencv-3.0.0-beta/INSTALL/lib
 opencvINC= -I/shared/apps/opencv-3.0.0-beta/INSTALL/include
-OPENCV_LINK =  -lopencv_core -lopencv_highgui -lopencv_imgproc -lopencv_photo -lopencv_video -lopencv_imgcodecs 
+OPENCV_LINK =  -lopencv_core \
+			   -lopencv_highgui \
+			   -lopencv_imgproc \
+			   -lopencv_photo \
+			   -lopencv_video \
+			   -lopencv_imgcodecs \
+			   -lopencv_features2d
 
 INCLUDES := -I include $(opencvINC)
 LIBS := $(opencvLIB)
@@ -79,11 +85,11 @@ debug :\
 # The build sequence for the particular executable we want to build. 
 $(RELEASE_DIR)/$(EXECUTABLE): $(RELEASE_EXEC_OBJS)
 	@echo $(RELEASE_EXEC_OBJS)
-	$(NVCC) $(NVCC_FLAGS) $(INCLUDES) $^ -o $@ $(GENCODE_FLAGS) $(OPENCV_LINK) -link 
+	$(NVCC) $(NVCC_FLAGS) $(LIBS) $(INCLUDES) $(GENCODE_FLAGS) $(OPENCV_LINK) -link $^ -o $@ 
 
 $(DEBUG_DIR)/$(EXECUTABLE): $(DEBUG_EXEC_OBJS)
 	@echo $(DEBUG_EXEC_OBJS)
-	$(NVCC) $(NVCC_FLAGS) $(INCLUDES) $^ -o $@ $(GENCODE_FLAGS) $(OPENCV_LINK) -link 
+	$(NVCC) $(NVCC_FLAGS) $(LIBS) $(INCLUDES) $(GENCODE_FLAGS) $(OPENCV_LINK) -link $^ -o $@ 
 
 clean :
 	@rm -rf $(DEBUG_DIR) $(RELEASE_DIR) 

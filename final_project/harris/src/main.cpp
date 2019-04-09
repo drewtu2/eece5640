@@ -1,6 +1,7 @@
 #include "opencv2/opencv.hpp"
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
+#include <opencv2/features2d.hpp>
 #include "HarrisCorner.h"
 
 #include <cstdio>
@@ -37,6 +38,10 @@ int main( int argc, const char** argv ) {
 
     // New mat has height/width the same as the old
     Mat image_corners = Mat::zeros(height, width, CV_8U);
+    std::vector<cv::KeyPoint> kps;
+    cpu->detect(input_image, kps);
+
+    drawKeypoints(input_image, kps, image_corners);
     
     cout << "writing output image " << argv[2] << endl;
     imwrite (argv[2], image_corners);

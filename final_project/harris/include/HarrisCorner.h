@@ -17,6 +17,8 @@ class HarrisCorner {
   float k;
   float corner_response_threshold;
 
+  void calculate_gradients(OutputArray ix, OutputArray iy, InputArray input);
+
  public:
 
   /**
