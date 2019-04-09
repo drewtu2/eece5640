@@ -11,13 +11,15 @@ using cv::OutputArrayOfArrays;
 using cv::KeyPoint;
 using cv::noArray;
 
+typedef unsigned char byte;
+
 class HarrisCorner {
 
  private:
   float k;
   float corner_response_threshold;
 
-  void calculate_gradients(OutputArray ix, OutputArray iy, InputArray input);
+  void calculate_gradients(byte* ix, byte* iy, byte* input, int width, int height);
 
  public:
 

@@ -6,7 +6,6 @@ using cv::Mat;
 using std::endl;
 using std::cout;
 
-
 HarrisCorner* HarrisCorner::create(float k, float threshold) {
     return new HarrisCorner(k, threshold);
 }
@@ -29,16 +28,34 @@ HarrisCorner::HarrisCorner(float k, float threshold) {
 void HarrisCorner::detect(InputArray image, std::vector<KeyPoint> &keypoints, InputArray mask) {
     // Used the following code as reference
     // http://arrayfire.org/docs/computer_vision_2harris_8cpp-example.htm
-    Mat ix = Mat::zeros(image.size(), CV_32FC1);
-    Mat iy = Mat::zeros(image.size(), CV_32FC1);
+    
+    double minVal; 
+    double maxVal; 
 
-    this->calculate_gradients(ix, iy, image);
+    Mat ix = Mat::zeros(image.size(), CV_8UC1);
+    Mat iy = Mat::zeros(image.size(), CV_8UC1);
+    Mat image_mat = image.getMat();
+
+    minMaxLoc(ix, &minVal, &maxVal);
+    cout << "ix min val : " << minVal << endl;
+    cout << "ix max val: " << maxVal << endl;
+
+    this->calculate_gradients(
+            (byte*)ix.data, (byte*)iy.data, 
+            (byte*)image_mat.data, 
+            image_mat.cols, image_mat.rows);
+    minMaxLoc(ix, &minVal, &maxVal);
+    cout << "ix min val : " << minVal << endl;
+    cout << "ix max val: " << maxVal << endl;
 
     // Multiply matrices together
     cout << "Running .muls" << endl;
     Mat ixx = ix.mul(ix);
     Mat iyy = iy.mul(iy);
     Mat ixy = iy.mul(ix);
+    minMaxLoc(ixy, &minVal, &maxVal);
+    cout << "ixx min val : " << minVal << endl;
+    cout << "ixx max val: " << maxVal << endl;
 
     // Harris Corner Response Matrix: 
     // [ixx, ixy;
@@ -50,13 +67,14 @@ void HarrisCorner::detect(InputArray image, std::vector<KeyPoint> &keypoints, In
     // Determinant at each pixel is the difference of the two diagonals
     cout << "Calculating determinatnts" << endl;
     Mat idet = ixx.mul(iyy) - ixy.mul(ixy);
+    minMaxLoc(idet, &minVal, &maxVal);
+    cout << "det min val : " << minVal << endl;
+    cout << "det max val: " << maxVal << endl;
 
     // Response
     cout << "Calculating response" << endl;
     Mat response = idet - this->k*(itrace.mul(itrace));
 
-    double minVal; 
-    double maxVal; 
     minMaxLoc( response, &minVal, &maxVal);
     cout << "min val : " << minVal << endl;
     cout << "max val: " << maxVal << endl;
@@ -87,14 +105,32 @@ void HarrisCorner::detect(InputArray image, std::vector<KeyPoint> &keypoints, In
     }
 }
 
-void HarrisCorner::calculate_gradients(OutputArray ix, OutputArray iy, InputArray input) {
-    //TODO - implement this
-    ix.create(input.size(), input.type());
-    iy.create(input.size(), input.type());
+void HarrisCorner::calculate_gradients(byte* ix, byte* iy, byte* input, int width, int height) {
 
-    Mat _ix = ix.getMat();
-    Mat _iy = iy.getMat();
+    int x, y;
+    int x_minus_one, x_plus_one;
+    int y_minus_one, y_plus_one;
+    int dx, dy;
 
-    _ix = input.getMat();
-    _iy = input.getMat();
+    // Iterate over the entire image
+    for(int ii = 0; ii < width * height; ++ii) {
+        x = ii / width;
+        y = ii % width;
+
+        // Break out... 
+        if(x <= 1 || y <= 1 || x >= width - 2 || y >= height - 2) {
+            continue;
+        }
+
+        x_minus_one = y*width + (x - 1);
+        x_plus_one = y*width + (x + 1);
+        y_minus_one = (y - 1)*width + x;
+        y_plus_one = (y + 1)*width + x;
+
+        dx = input[x_minus_one] - input[x_plus_one];
+        dy = input[y_minus_one] - input[y_plus_one];
+        
+        ix[ii] = dx;
+        iy[ii] = dy;
+    }
 }
