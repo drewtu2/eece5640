@@ -49,7 +49,8 @@ EXECUTABLE := main
 # A list of source files for the executable we want to build
 EXEC_SRCS := \
   $(SRC_DIR)/main.cpp \
-  $(SRC_DIR)/HarrisCorner.cpp
+  $(SRC_DIR)/HarrisCorner.cpp \
+  $(SRC_DIR)/utils.cpp
 
 
 # An self generating list of objects for each of the objects needed in the 

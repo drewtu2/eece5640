@@ -11,8 +11,6 @@ using cv::OutputArrayOfArrays;
 using cv::KeyPoint;
 using cv::noArray;
 
-typedef unsigned char byte;
-
 class HarrisCorner {
 
  private:
@@ -21,6 +19,7 @@ class HarrisCorner {
 
   void calculate_gradients(float* ix, float* iy, float* input, int width, int height);
   void element_mul(float* output, float* input_1, float* input_2, int width, int height);
+  void thresholding(std::vector< KeyPoint > &keypoints, InputArray response);
 
  public:
 
