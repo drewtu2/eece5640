@@ -57,9 +57,7 @@ void HarrisCorner::detect(InputArray image, std::vector<KeyPoint> &keypoints, In
 
     double minVal; 
     double maxVal; 
-    Point minLoc; 
-    Point maxLoc;
-    minMaxLoc( response, &minVal, &maxVal, &minLoc, &maxLoc );
+    minMaxLoc( response, &minVal, &maxVal);
     cout << "min val : " << minVal << endl;
     cout << "max val: " << maxVal << endl;
 
