@@ -19,7 +19,8 @@ class HarrisCorner {
   float k;
   float corner_response_threshold;
 
-  void calculate_gradients(byte* ix, byte* iy, byte* input, int width, int height);
+  void calculate_gradients(float* ix, float* iy, float* input, int width, int height);
+  void element_mul(float* output, float* input_1, float* input_2, int width, int height);
 
  public:
 

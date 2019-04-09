@@ -37,7 +37,7 @@ int main( int argc, const char** argv ) {
     HarrisCorner* cpu = HarrisCorner::create(0.04f, 1e5f);
 
     // New mat has height/width the same as the old
-    Mat image_corners = Mat::zeros(height, width, CV_8U);
+    Mat image_corners = Mat::zeros(height, width, CV_32FC1);
     std::vector<cv::KeyPoint> kps;
     cpu->detect(input_image, kps);
 

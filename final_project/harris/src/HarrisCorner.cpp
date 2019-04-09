@@ -1,10 +1,47 @@
+#include <opencv2/opencv.hpp>
 #include <opencv2/core/mat.hpp>
 #include <iostream>
 #include "HarrisCorner.h"
+#include <string>
+#include <cmath>
 
+using std::string;
 using cv::Mat;
 using std::endl;
 using std::cout;
+
+//Usefull debugging function from:
+// https://stackoverflow.com/questions/10167534/how-to-find-out-what-type-of-a-mat-object-is-with-mattype-in-opencv
+string type2str(int type) {
+  string r;
+
+  uchar depth = type & CV_MAT_DEPTH_MASK;
+  uchar chans = 1 + (type >> CV_CN_SHIFT);
+
+  switch ( depth ) {
+    case CV_8U:  r = "8U"; break;
+    case CV_8S:  r = "8S"; break;
+    case CV_16U: r = "16U"; break;
+    case CV_16S: r = "16S"; break;
+    case CV_32S: r = "32S"; break;
+    case CV_32F: r = "32F"; break;
+    case CV_64F: r = "64F"; break;
+    default:     r = "User"; break;
+  }
+
+  r += "C";
+  r += (chans+'0');
+
+  return r;
+}
+
+void print_bounds(InputArray input, string name) {
+    double minVal, maxVal;
+    minMaxLoc(input.getMat(), &minVal, &maxVal);
+    cout << name << " min val : " << minVal << endl;
+    cout << name << " max val: " << maxVal << endl;
+}
+
 
 HarrisCorner* HarrisCorner::create(float k, float threshold) {
     return new HarrisCorner(k, threshold);
@@ -29,88 +66,88 @@ void HarrisCorner::detect(InputArray image, std::vector<KeyPoint> &keypoints, In
     // Used the following code as reference
     // http://arrayfire.org/docs/computer_vision_2harris_8cpp-example.htm
     
-    double minVal; 
-    double maxVal; 
 
-    Mat ix = Mat::zeros(image.size(), CV_8UC1);
-    Mat iy = Mat::zeros(image.size(), CV_8UC1);
+    Mat ix = Mat::zeros(image.size(), CV_32FC1);
+    Mat iy = Mat::zeros(image.size(), CV_32FC1);
     Mat image_mat = image.getMat();
+    image_mat.convertTo(image_mat, CV_32FC1);       // Convert to 32_FC1 to avoid overflow
+    
+    print_bounds(image_mat, "Image");
 
-    minMaxLoc(ix, &minVal, &maxVal);
-    cout << "ix min val : " << minVal << endl;
-    cout << "ix max val: " << maxVal << endl;
+    cout << "Image channels: " << image_mat.channels() << endl;
+    
+    int width = image_mat.cols;
+    int height = image_mat.rows;
 
     this->calculate_gradients(
-            (byte*)ix.data, (byte*)iy.data, 
-            (byte*)image_mat.data, 
-            image_mat.cols, image_mat.rows);
-    minMaxLoc(ix, &minVal, &maxVal);
-    cout << "ix min val : " << minVal << endl;
-    cout << "ix max val: " << maxVal << endl;
+            (float*)ix.data, (float*)iy.data, 
+            (float*)image_mat.data, 
+            width, height);
+    
+    print_bounds(ix, "ix");
+    print_bounds(iy, "iy");
 
     // Multiply matrices together
     cout << "Running .muls" << endl;
-    Mat ixx = ix.mul(ix);
-    Mat iyy = iy.mul(iy);
+    Mat ix2 = ix.mul(ix);
+    Mat iy2 = iy.mul(iy);
     Mat ixy = iy.mul(ix);
-    minMaxLoc(ixy, &minVal, &maxVal);
-    cout << "ixx min val : " << minVal << endl;
-    cout << "ixx max val: " << maxVal << endl;
 
+    print_bounds(ix2, "ix2");
+    print_bounds(ixy, "ixy");
+    print_bounds(iy2, "iy2");
+
+    cv::imwrite ("ix2.jpg", ix2);
+    cv::imwrite ("iy2.jpg", iy2);
     // Harris Corner Response Matrix: 
-    // [ixx, ixy;
-    // ixy, iyy]
+    // [ix2, ixy;
+    // ixy, iy2]
 
     // Trace is added together the main diagonal
-    Mat itrace = ixx + iyy;
+    Mat itrace = ix2 + iy2;
 
     // Determinant at each pixel is the difference of the two diagonals
     cout << "Calculating determinatnts" << endl;
-    Mat idet = ixx.mul(iyy) - ixy.mul(ixy);
-    minMaxLoc(idet, &minVal, &maxVal);
-    cout << "det min val : " << minVal << endl;
-    cout << "det max val: " << maxVal << endl;
+    Mat idet = ix2.mul(iy2) - ixy.mul(ixy);
+    print_bounds(itrace, "itrace");
+    print_bounds(ix2.mul(iy2), "ix2y2");
+    print_bounds(ixy.mul(ixy), "ixyxy");
+    print_bounds(idet, "idet");
+    cout << "det type: " << type2str(idet.type()) << endl;
 
     // Response
     cout << "Calculating response" << endl;
-    Mat response = idet - this->k*(itrace.mul(itrace));
+    Mat response = abs(idet - this->k*(itrace.mul(itrace)));
 
-    minMaxLoc( response, &minVal, &maxVal);
-    cout << "min val : " << minVal << endl;
-    cout << "max val: " << maxVal << endl;
+    Mat writeableResponse;
+    response.convertTo(writeableResponse, CV_8UC1, 255.0);
+    print_bounds(response, "Response ");
+    print_bounds(writeableResponse, "Response ");
+    cv::imwrite ("response.jpg", writeableResponse);
 
-    // Extract keyponts from image
-    int channels = response.channels();
-    int nRows = response.rows;
-    int nCols = response.cols * channels;
-
-    if (response.isContinuous())
-    {
-        nCols *= nRows;
-        nRows = 1;
-    }
-
-
-
-    uchar* p;
-    for(int i = 0; i < nRows; ++i) {
-        // get the row ptr
-        p = response.ptr<uchar>(i);
-        for(int j = 0; j < nCols; ++j)
-        {
-            if (p[j] > this->corner_response_threshold) {
-                keypoints.push_back(KeyPoint((float)i, (float)j, 3));
-            }
+    cout << "response type: " << type2str(response.type()) << endl;
+    cout << "threshold value: " << this->corner_response_threshold << endl;
+    int x, y;
+    float response_value; 
+    // Iterate over the entire image
+    for(int ii = 0; ii < width*height; ++ii) {
+        x = ii / width;
+        y = ii % width;
+        response_value = response.at<float>(x, y);
+        if (response_value > this->corner_response_threshold) {
+            cout << "Point at (" << x << ", " << y << ")" << endl;
+            keypoints.push_back(KeyPoint((float)x, (float)y, 3));
         }
     }
+    print_bounds(response, "final rsponse");
 }
 
-void HarrisCorner::calculate_gradients(byte* ix, byte* iy, byte* input, int width, int height) {
+void HarrisCorner::calculate_gradients(float* ix, float* iy, float* input, int width, int height) {
 
     int x, y;
     int x_minus_one, x_plus_one;
     int y_minus_one, y_plus_one;
-    int dx, dy;
+    float dx, dy;
 
     // Iterate over the entire image
     for(int ii = 0; ii < width * height; ++ii) {
@@ -127,10 +164,16 @@ void HarrisCorner::calculate_gradients(byte* ix, byte* iy, byte* input, int widt
         y_minus_one = (y - 1)*width + x;
         y_plus_one = (y + 1)*width + x;
 
-        dx = input[x_minus_one] - input[x_plus_one];
-        dy = input[y_minus_one] - input[y_plus_one];
+        dx = abs(input[x_minus_one] - input[x_plus_one]);
+        dy = abs(input[y_minus_one] - input[y_plus_one]);
         
         ix[ii] = dx;
         iy[ii] = dy;
+    }
+}
+
+void element_mul(byte* output, byte* input_1, byte* input_2, int width, int height) {
+    for(int ii = 0; ii < width * height; ++ii) {
+        output[ii] = input_1[ii] * input_2[ii];
     }
 }
