@@ -131,9 +131,9 @@ void HarrisCorner::detect(InputArray image, std::vector<KeyPoint> &keypoints, In
     float response_value; 
     // Iterate over the entire image
     for(int ii = 0; ii < width*height; ++ii) {
-        x = ii / width;
-        y = ii % width;
-        response_value = response.at<float>(x, y);
+        x = ii % width;
+        y = ii / width;
+        response_value = response.at<float>(y, x);
         if (response_value > this->corner_response_threshold) {
             cout << "Point at (" << x << ", " << y << ")" << endl;
             keypoints.push_back(KeyPoint((float)x, (float)y, 3));
@@ -151,8 +151,8 @@ void HarrisCorner::calculate_gradients(float* ix, float* iy, float* input, int w
 
     // Iterate over the entire image
     for(int ii = 0; ii < width * height; ++ii) {
-        x = ii / width;
-        y = ii % width;
+        x = ii % width;
+        y = ii / width;
 
         // Break out... 
         if(x <= 1 || y <= 1 || x >= width - 2 || y >= height - 2) {
