@@ -1,4 +1,5 @@
 #include <opencv2/opencv.hpp>
+#include <opencv2/core/mat.hpp>
 #include <string>
 
 #include "utils.h"
@@ -39,4 +40,63 @@ void print_bounds(InputArray input, string name) {
     minMaxLoc(input.getMat(), &minVal, &maxVal);
     cout << name << " min val : " << minVal << endl;
     cout << name << " max val: " << maxVal << endl;
+}
+
+Mat scalar_mul(float* input, float scalar, int width, int height) {
+    Mat output_mat = Mat::zeros(width, height, CV_32FC1);
+    float* output = (float*)output_mat.data;
+
+    #pragma omp parallel for
+    for(int ii = 0; ii < width * height; ++ii) {
+        output[ii] = input[ii] * scalar;
+    }
+    
+    return output_mat;
+}
+
+Mat scalar_add(float* input, float scalar, int width, int height) {
+    Mat output_mat = Mat::zeros(width, height, CV_32FC1);
+    float* output = (float*)output_mat.data;
+
+    #pragma omp parallel for
+    for(int ii = 0; ii < width * height; ++ii) {
+        output[ii] = input[ii] + scalar;
+    }
+
+    return output_mat;
+}
+
+Mat element_mul(float* input_1, float* input_2, int width, int height) {
+    Mat output_mat = Mat::zeros(width, height, CV_32FC1);
+    float* output = (float*)output_mat.data;
+
+    #pragma omp parallel for
+    for(int ii = 0; ii < width * height; ++ii) {
+        output[ii] = input_1[ii] * input_2[ii];
+    }
+
+    return output_mat;
+}
+
+Mat element_subtract(float* input_1, float* input_2, int width, int height) {
+    Mat output_mat = Mat::zeros(width, height, CV_32FC1);
+    float* output = (float*)output_mat.data;
+
+    #pragma omp parallel for
+    for(int ii = 0; ii < width * height; ++ii) {
+        output[ii] = input_1[ii] - input_2[ii];
+    }
+
+    return output_mat;
+}
+
+Mat element_add(float* input_1, float* input_2, int width, int height) {
+    Mat output_mat = Mat::zeros(width, height, CV_32FC1);
+    float* output = (float*)output_mat.data;
+    #pragma omp parallel for
+    for(int ii = 0; ii < width * height; ++ii) {
+        output[ii] = input_1[ii] + input_2[ii];
+    }
+    
+    return output_mat;
 }

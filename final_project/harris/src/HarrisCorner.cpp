@@ -3,6 +3,7 @@
 #include <iostream>
 #include <string>
 #include <cmath>
+#include <omp.h>
 
 #include "HarrisCorner.h"
 #include "utils.h"
@@ -24,11 +25,15 @@ HarrisCorner* HarrisCorner::createOpenMP(float k, float threshold) {
 HarrisCorner::HarrisCorner() {
     this->k = .04f;
     this->corner_response_threshold = 1e5f;
+    this->num_threads = 1;
+    omp_set_num_threads(this->num_threads);
 }
 
 HarrisCorner::HarrisCorner(float k, float threshold) {
     this->k = k;
     this->corner_response_threshold = threshold;
+    this->num_threads = 1;
+    omp_set_num_threads(this->num_threads);
 }
 
 void HarrisCorner::detect(InputArray image, std::vector<KeyPoint> &keypoints, InputArray mask) {
@@ -50,20 +55,23 @@ void HarrisCorner::detect(InputArray image, std::vector<KeyPoint> &keypoints, In
     
     // Multiply matrices together
     cout << "Running .muls" << endl;
-    Mat ix2 = ix.mul(ix);
-    Mat iy2 = iy.mul(iy);
-    Mat ixy = iy.mul(ix);
+    Mat ix2 = element_mul(ix, ix);
+    Mat iy2 = element_mul(iy, iy);
+    Mat ixy = element_mul(ix, iy);
 
     // Harris Corner Response Matrix: 
     // [ix2, ixy;
     // ixy, iy2]
 
     // Trace is added together the main diagonal
-    Mat itrace = ix2 + iy2;
+    Mat itrace = element_add(ix2, iy2);
 
     // Determinant at each pixel is the difference of the two diagonals
+    //Mat idet = ix2.mul(iy2) - ixy.mul(ixy);
     cout << "Calculating determinatnts" << endl;
-    Mat idet = ix2.mul(iy2) - ixy.mul(ixy);
+    Mat ix2y2   = element_mul(ix2, iy2);
+    Mat ixy2    = element_mul(ixy, ixy);
+    Mat idet    = element_subtract(idet, ixy2);
 
     // Response
     cout << "Calculating response" << endl;
@@ -85,12 +93,16 @@ void HarrisCorner::thresholding(std::vector<KeyPoint>& keypoints, InputArray inp
     int x, y;
     float response_value; 
     // Iterate over the entire image
+    #pragma omp parallel for
     for(int ii = 0; ii < width*height; ++ii) {
         x = ii % width;
         y = ii / width;
         response_value = response.at<float>(y, x);
         if (response_value > this->corner_response_threshold) {
-            keypoints.push_back(KeyPoint((float)x, (float)y, 3));
+            #pragma omp critical
+            {
+                keypoints.push_back(KeyPoint((float)x, (float)y, 3));
+            }
         }
     }
 
@@ -103,6 +115,7 @@ void HarrisCorner::calculate_gradients(float* ix, float* iy, float* input, int w
     float dx, dy;
 
     // Iterate over the entire image
+    #pragma omp parallel for
     for(int ii = 0; ii < width * height; ++ii) {
         x = ii % width;
         y = ii / width;
@@ -122,12 +135,5 @@ void HarrisCorner::calculate_gradients(float* ix, float* iy, float* input, int w
         
         ix[ii] = dx;
         iy[ii] = dy;
-    }
-}
-
-void HarrisCorner::element_mul(float* output, float* input_1, float* input_2, 
-        int width, int height) {
-    for(int ii = 0; ii < width * height; ++ii) {
-        output[ii] = input_1[ii] * input_2[ii];
     }
 }

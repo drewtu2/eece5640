@@ -22,4 +22,11 @@ string type2str(int type);
  */
 void print_bounds(InputArray input, string name);
 
+
+Mat scalar_mul (Mat input, float scalar);
+Mat scalar_add (Mat input, float scalar);
+Mat element_mul(Mat input_1, Mat input_2);
+Mat element_add(Mat input_1, Mat input_2);
+Mat element_subtract(Mat input_1, Mat input_2);
+
 #endif

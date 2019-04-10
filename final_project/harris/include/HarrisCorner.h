@@ -16,9 +16,9 @@ class HarrisCorner {
  private:
   float k;
   float corner_response_threshold;
+  int num_threads;
 
   void calculate_gradients(float* ix, float* iy, float* input, int width, int height);
-  void element_mul(float* output, float* input_1, float* input_2, int width, int height);
   void thresholding(std::vector< KeyPoint > &keypoints, InputArray response);
 
  public:

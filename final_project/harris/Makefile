@@ -17,7 +17,7 @@ CXX := g++
 CXXFLAGS := -std=c++11
 
 NVCC := nvcc
-NVCC_FLAGS := -std=c++11
+NVCC_FLAGS := -std=c++11 
 
 RELEASE_FLAGS := -o3
 DEBUG_FLAGS := -g3 
@@ -38,7 +38,9 @@ OPENCV_LINK =  -lopencv_core \
 			   -lopencv_features2d
 
 INCLUDES := -I include $(opencvINC)
-LIBS := $(opencvLIB)
+LIBS := $(opencvLIB) 
+CXX_LIBS := -fopenmp
+NVCC_LIBS := -Xcompiler -fopenmp
 
 ###############################################################################
 # Sources List + Object List Creation
@@ -86,11 +88,11 @@ debug :\
 # The build sequence for the particular executable we want to build. 
 $(RELEASE_DIR)/$(EXECUTABLE): $(RELEASE_EXEC_OBJS)
 	@echo $(RELEASE_EXEC_OBJS)
-	$(NVCC) $(NVCC_FLAGS) $(LIBS) $(INCLUDES) $(GENCODE_FLAGS) $(OPENCV_LINK) -link $^ -o $@ 
+	$(NVCC) $(NVCC_FLAGS) $(NVCC_LIBS) $(LIBS) $(INCLUDES) $(GENCODE_FLAGS) $(OPENCV_LINK) -link $^ -o $@ 
 
 $(DEBUG_DIR)/$(EXECUTABLE): $(DEBUG_EXEC_OBJS)
 	@echo $(DEBUG_EXEC_OBJS)
-	$(NVCC) $(NVCC_FLAGS) $(LIBS) $(INCLUDES) $(GENCODE_FLAGS) $(OPENCV_LINK) -link $^ -o $@ 
+	$(NVCC) $(NVCC_FLAGS) $(NVCC_LIBS) $(LIBS) $(INCLUDES) $(GENCODE_FLAGS) $(OPENCV_LINK) -link $^ -o $@ 
 
 clean :
 	@rm -rf $(DEBUG_DIR) $(RELEASE_DIR) 
@@ -102,22 +104,22 @@ clean :
 # Build the .o file for each src file
 $(RELEASE_DIR)/%.o : $(SRC_DIR)/%.cpp | release_directory
 	@echo $(RELEASE_EXEC_OBJS)
-	$(CXX) $(CXXFLAGS) $(RELEASE_FLAGS) $(INCLUDES) $(LIBS) -c $< -o $@
+	$(CXX) $(CXXFLAGS) $(RELEASE_FLAGS) $(INCLUDES) $(CXX_LIBS) $(LIBS) -c $< -o $@
 $(RELEASE_DIR)/%.o : $(SRC_DIR)/%.cu | release_directory
 	@echo $(RELEASE_EXEC_OBJS)
-	$(NVCC) $(NVCC_FLAGS) $(INCLUDES) $(LIBS) -c $< -o $@
+	$(NVCC) $(NVCC_FLAGS) $(INCLUDES) $(NVCC_LIBS) $(LIBS) -c $< -o $@
 
 $(DEBUG_DIR)/%.o : $(SRC_DIR)/%.cpp | debug_directory
-	$(CXX) $(CXXFLAGS) $(DEBUG_FLAGS) $(INCLUDES) $(LIBS) -c $< -o $@
+	$(CXX) $(CXXFLAGS) $(DEBUG_FLAGS) $(INCLUDES) $(CXX_LIBS) $(LIBS) -c $< -o $@
 $(DEBUG_DIR)/%.o : $(SRC_DIR)/%.cu | debug_directory
-	$(NVCC) $(NVCC_FLAGS) $(INCLUDES) $(LIBS) -c $< -o $@
+	$(NVCC) $(NVCC_FLAGS) $(INCLUDES) $(NVCC_LIBS) $(LIBS) -c $< -o $@
 
 # Autogen dependencies
 $(RELEASE_DIR)/%.d : $(SRC_DIR)/%.cpp 
 	@echo "Running Autogen..."
 	@set -e;\
 	rm -f $@;\
-	$(CXX) -MM $(CXXFLAGS) $(INCLUDES) $(LIBS) $< > $@.$$$$;\
+	$(CXX) -MM $(CXXFLAGS) $(INCLUDES) $(CXX_LIBS) $(LIBS) $< > $@.$$$$;\
 	sed 's,\($*\)\.o[ :]*,$(RELEASE_DIR)/\1.o $@ : ,g' < $@.$$$$ > $@; \
 	rm -f $@.$$$$
 
@@ -125,7 +127,7 @@ $(RELEASE_DIR)/%.d : $(SRC_DIR)/%.cu
 	@echo "Running Autogen..."
 	@set -e;\
 	rm -f $@;\
-	$(NVCC) -MM $(NVCC_FLAGS) $(LIBS) $< > $@.$$$$;\
+	$(NVCC) -MM $(NVCC_FLAGS) $(NVCC_LIBS) $(LIBS) $< > $@.$$$$;\
 	sed 's,\($*\)\.o[ :]*,$(RELEASE_DIR)/\1.o $@ : ,g' < $@.$$$$ > $@; \
 	rm -f $@.$$$$
 
@@ -133,7 +135,7 @@ $(DEBUG_DIR)/%.d : $(SRC_DIR)/%.cpp
 	@echo "Running Autogen..."
 	@set -e;\
 	rm -f $@;\
-	$(CXX) -MM $(CXXFLAGS) $(INCLUDES) $(LIBS) $< > $@.$$$$;\
+	$(CXX) -MM $(CXXFLAGS) $(INCLUDES) $(CXX_LIBS) $(LIBS) $< > $@.$$$$;\
 	sed 's,\($*\)\.o[ :]*,$(DEBUG_DIR)/\1.o $@ : ,g' < $@.$$$$ > $@; \
 	rm -f $@.$$$$
 
@@ -141,7 +143,7 @@ $(DEBUG_DIR)/%.d : $(SRC_DIR)/%.cu
 	@echo "Running Autogen..."
 	@set -e;\
 	rm -f $@;\
-	$(NVCC) -MM $(NVCC_FLAGS) $(INCLUDES) $(LIBS) $< > $@.$$$$;\
+	$(NVCC) -MM $(NVCC_FLAGS) $(INCLUDES) $(NVCC_LIBS) $(LIBS) $< > $@.$$$$;\
 	sed 's,\($*\)\.o[ :]*,$(DEBUG_DIR)/\1.o $@ : ,g' < $@.$$$$ > $@; \
 	rm -f $@.$$$$
 

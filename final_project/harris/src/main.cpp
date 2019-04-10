@@ -1,16 +1,48 @@
-#include "opencv2/opencv.hpp"
-#include "opencv2/highgui/highgui.hpp"
-#include "opencv2/imgproc/imgproc.hpp"
-#include <opencv2/features2d.hpp>
-#include "HarrisCorner.h"
-
 #include <cstdio>
 #include <cstdlib>
 #include <iostream>
-#include <ctime>
+#include <chrono>
+
+#include <opencv2/opencv.hpp>
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/features2d.hpp>
+
+#include "HarrisCorner.h"
 
 using namespace cv;
 using namespace std;
+
+typedef std::chrono::high_resolution_clock Clock;
+
+/**
+ * Run a serial implementation of the detector
+ */
+void run_cpu(Mat input_image, const char* output_file) {
+    // Get the size
+    unsigned int height = input_image.rows;
+    unsigned int  width = input_image.cols;
+    
+    // New mat has height/width the same as the old
+    Mat image_corners = Mat::zeros(height, width, CV_32FC1);
+    
+    // Create a place to dump the detected keypoints
+    std::vector<cv::KeyPoint> kps;
+    
+    // This is the actual detection
+    HarrisCorner* cpu = HarrisCorner::create(0.04f, 1e5f);
+    auto t1 = Clock::now();                 // Make sure to start timing
+    cpu->detect(input_image, kps);
+    auto t2 = Clock::now();                 // End timing
+    cout << "Time to find CPU: "            // Print results
+         << std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count()
+         << " ms" << std::endl;
+
+    // Draw results
+    drawKeypoints(input_image, kps, image_corners, Scalar( 0, 0, 255));
+    cout << "writing output image " << output_file << endl;
+    imwrite (output_file, image_corners);
+}
 
 int main( int argc, const char** argv ) {
     // arg 1: Input image 
@@ -31,20 +63,7 @@ int main( int argc, const char** argv ) {
         return -1;
     }
     
-    unsigned int height = input_image.rows;
-    unsigned int  width = input_image.cols;
-    
-    HarrisCorner* cpu = HarrisCorner::create(0.04f, 1e5f);
-
-    // New mat has height/width the same as the old
-    Mat image_corners = Mat::zeros(height, width, CV_32FC1);
-    std::vector<cv::KeyPoint> kps;
-    cpu->detect(input_image, kps);
-
-    drawKeypoints(input_image, kps, image_corners, Scalar( 0, 0, 255));
-    
-    cout << "writing output image " << argv[2] << endl;
-    imwrite (argv[2], image_corners);
+    run_cpu(input_image, argv[2]);
 
     return 0;
     
