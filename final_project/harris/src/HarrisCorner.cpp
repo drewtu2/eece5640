@@ -17,23 +17,14 @@ HarrisCorner* HarrisCorner::create(float k, float threshold) {
     return new HarrisCorner(k, threshold);
 }
 
-HarrisCorner* HarrisCorner::createOpenMP(float k, float threshold) {
-    //TODO: Update this to use an openmp version
-    return new HarrisCorner(k, threshold);
-}
-
 HarrisCorner::HarrisCorner() {
     this->k = .04f;
     this->corner_response_threshold = 1e5f;
-    this->num_threads = 1;
-    omp_set_num_threads(this->num_threads);
 }
 
 HarrisCorner::HarrisCorner(float k, float threshold) {
     this->k = k;
     this->corner_response_threshold = threshold;
-    this->num_threads = 1;
-    omp_set_num_threads(this->num_threads);
 }
 
 void HarrisCorner::detect(InputArray image, std::vector<KeyPoint> &keypoints, InputArray mask) {
@@ -42,8 +33,8 @@ void HarrisCorner::detect(InputArray image, std::vector<KeyPoint> &keypoints, In
     Mat image_mat = image.getMat();
     image_mat.convertTo(image_mat, CV_32FC1);       // Convert to 32_FC1 to avoid overflow
     
-    Mat ix = Mat::zeros(image.size(), CV_32FC1);
-    Mat iy = Mat::zeros(image.size(), CV_32FC1);
+    Mat ix = Mat::zeros(image_mat.size(), CV_32FC1);
+    Mat iy = Mat::zeros(image_mat.size(), CV_32FC1);
     
     int width = image_mat.cols;
     int height = image_mat.rows;
@@ -54,7 +45,6 @@ void HarrisCorner::detect(InputArray image, std::vector<KeyPoint> &keypoints, In
             width, height);
     
     // Multiply matrices together
-    cout << "Running .muls" << endl;
     Mat ix2 = element_mul(ix, ix);
     Mat iy2 = element_mul(iy, iy);
     Mat ixy = element_mul(ix, iy);
@@ -68,14 +58,14 @@ void HarrisCorner::detect(InputArray image, std::vector<KeyPoint> &keypoints, In
 
     // Determinant at each pixel is the difference of the two diagonals
     //Mat idet = ix2.mul(iy2) - ixy.mul(ixy);
-    cout << "Calculating determinatnts" << endl;
     Mat ix2y2   = element_mul(ix2, iy2);
     Mat ixy2    = element_mul(ixy, ixy);
-    Mat idet    = element_subtract(idet, ixy2);
+    Mat idet    = element_subtract(ix2y2, ixy2);
 
     // Response
-    cout << "Calculating response" << endl;
-    Mat response = abs(idet - this->k*(itrace.mul(itrace)));
+    Mat itrace2 = element_mul(itrace, itrace);
+    itrace2 = scalar_mul(itrace2, this->k);
+    Mat response = abs(element_subtract(idet, itrace2));
 
     //Mat writeableResponse;
     //response.convertTo(writeableResponse, CV_8UC1, 255.0);

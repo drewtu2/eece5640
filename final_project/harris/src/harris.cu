@@ -27,7 +27,7 @@
   cudaEventDestroy(t##_end);     
   
 unsigned char *input_gpu;
-unsigned char *output_gpu;
+float *output_gpu;
 
 /*******************************************************/
 /*                 Cuda Error Function                 */
@@ -42,13 +42,15 @@ inline cudaError_t checkCuda(cudaError_t result) {
 		return result;
 }
 
-__global__ void kernel(unsigned char *input, 
-                       unsigned char *output,
+__global__ void calculate_response(unsigned char *input, 
+                       float *output,
                        unsigned int height,
                        unsigned int width){
 
 	int x = blockIdx.x*TILE_SIZE+threadIdx.x;
 	int y = blockIdx.y*TILE_SIZE+threadIdx.y;
+    
+    float k = .04;
 	
     // This represents the first and last row/column of the image. sobel needs 
     // a delta of at least one
@@ -62,15 +64,29 @@ __global__ void kernel(unsigned char *input,
     int x_plus_one = y*width + (x + 1);
     int y_minus_one = (y - 1)*width + x;
     int y_plus_one = (y + 1)*width + x;
-
+    
+    // Calculate dx, dy
     float dx = input[x_minus_one] - input[x_plus_one];
     float dy = input[y_minus_one] - input[y_plus_one];
+
+    // Caclualte dx2, dy2, dxy
+    float ix2 = dx*dx;
+    float iy2 = dy*dy;
+    float ixy = dx*dy;
     
-    output[offset] = sqrt( (dx*dx) + (dy*dy) );
+    // Harris Corner Response Matrix: 
+    // [ix2, ixy;
+    // ixy, iy2]
+    float itrace    = ix2 + iy2;
+    float idet      = (ix2*iy2) - (ixy*ixy);
+
+    float response = abs(idet - (k * itrace * itrace));
+
+    output[offset] = response;
 }
 
 void gpu_function (unsigned char *input, 
-                   unsigned char *output,
+                   float *output,
                    unsigned int height, 
                    unsigned int width){
     
@@ -82,9 +98,9 @@ void gpu_function (unsigned char *input,
 	
 	// Allocate arrays in GPU memory
 	checkCuda(cudaMalloc((void**)&input_gpu   , size*sizeof(unsigned char)));
-	checkCuda(cudaMalloc((void**)&output_gpu  , size*sizeof(unsigned char)));
+	checkCuda(cudaMalloc((void**)&output_gpu  , size*sizeof(float)));
 	
-    checkCuda(cudaMemset(output_gpu , 0 , size*sizeof(unsigned char)));
+    checkCuda(cudaMemset(output_gpu , 0 , size*sizeof(float)));
 	
     // Copy data to GPU
     checkCuda(cudaMemcpy(input_gpu, 
@@ -106,7 +122,7 @@ void gpu_function (unsigned char *input,
 		TIMER_START(Ktime);
 	#endif
         
-        kernel<<<dimGrid, dimBlock>>>(input_gpu, 
+        calculate_response<<<dimGrid, dimBlock>>>(input_gpu, 
                                       output_gpu,
                                       height, 
                                       width);
@@ -122,11 +138,10 @@ void gpu_function (unsigned char *input,
 	// Retrieve results from the GPU
 	checkCuda(cudaMemcpy(output, 
 			output_gpu, 
-			size*sizeof(unsigned char), 
+			size*sizeof(float), 
 			cudaMemcpyDeviceToHost));
 
     // Free resources and end the program
 	checkCuda(cudaFree(output_gpu));
 	checkCuda(cudaFree(input_gpu));
-
 }

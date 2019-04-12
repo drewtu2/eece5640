@@ -16,7 +16,6 @@ class HarrisCorner {
  private:
   float k;
   float corner_response_threshold;
-  int num_threads;
 
   void calculate_gradients(float* ix, float* iy, float* input, int width, int height);
   void thresholding(std::vector< KeyPoint > &keypoints, InputArray response);
@@ -29,11 +28,6 @@ class HarrisCorner {
   static HarrisCorner* create(float k, float threshold);
   
   /**
-   * Creates an OpenMP accelerated Harris Corner Detector
-   */
-  static HarrisCorner* createOpenMP(float k, float threshold);
-
-  /**
    * Default constructor for Harris Corner Detector
    */
   HarrisCorner();
@@ -42,7 +36,6 @@ class HarrisCorner {
    * Choose different k constructor for Harris Corner Detector
    */
   HarrisCorner(float k, float threshold);
-
 
   /**
    * Populates a vector with a list of corner keypoints detected in the given

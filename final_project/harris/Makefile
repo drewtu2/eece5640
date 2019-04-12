@@ -52,7 +52,8 @@ EXECUTABLE := main
 EXEC_SRCS := \
   $(SRC_DIR)/main.cpp \
   $(SRC_DIR)/HarrisCorner.cpp \
-  $(SRC_DIR)/utils.cpp
+  $(SRC_DIR)/utils.cpp \
+  $(SRC_DIR)/harris.cu
 
 
 # An self generating list of objects for each of the objects needed in the 

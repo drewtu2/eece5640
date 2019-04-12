@@ -42,9 +42,12 @@ void print_bounds(InputArray input, string name) {
     cout << name << " max val: " << maxVal << endl;
 }
 
-Mat scalar_mul(float* input, float scalar, int width, int height) {
-    Mat output_mat = Mat::zeros(width, height, CV_32FC1);
+Mat scalar_mul(Mat input_mat, float scalar) {
+    int width = input_mat.cols;
+    int height = input_mat.rows;
+    Mat output_mat = Mat::zeros(input_mat.size(), CV_32FC1);
     float* output = (float*)output_mat.data;
+    float* input = (float*)input_mat.data;
 
     #pragma omp parallel for
     for(int ii = 0; ii < width * height; ++ii) {
@@ -54,9 +57,12 @@ Mat scalar_mul(float* input, float scalar, int width, int height) {
     return output_mat;
 }
 
-Mat scalar_add(float* input, float scalar, int width, int height) {
-    Mat output_mat = Mat::zeros(width, height, CV_32FC1);
+Mat scalar_add(Mat input_mat, float scalar) {
+    int width = input_mat.cols;
+    int height = input_mat.rows;
+    Mat output_mat = Mat::zeros(input_mat.size(), CV_32FC1);
     float* output = (float*)output_mat.data;
+    float* input = (float*)input_mat.data;
 
     #pragma omp parallel for
     for(int ii = 0; ii < width * height; ++ii) {
@@ -66,9 +72,13 @@ Mat scalar_add(float* input, float scalar, int width, int height) {
     return output_mat;
 }
 
-Mat element_mul(float* input_1, float* input_2, int width, int height) {
-    Mat output_mat = Mat::zeros(width, height, CV_32FC1);
+Mat element_mul(Mat input_mat_1, Mat input_mat_2) {
+    int width = input_mat_1.cols;
+    int height = input_mat_1.rows;
+    Mat output_mat = Mat::zeros(input_mat_1.size(), CV_32FC1);
     float* output = (float*)output_mat.data;
+    float* input_1 = (float*)input_mat_1.data;
+    float* input_2 = (float*)input_mat_2.data;
 
     #pragma omp parallel for
     for(int ii = 0; ii < width * height; ++ii) {
@@ -78,9 +88,13 @@ Mat element_mul(float* input_1, float* input_2, int width, int height) {
     return output_mat;
 }
 
-Mat element_subtract(float* input_1, float* input_2, int width, int height) {
-    Mat output_mat = Mat::zeros(width, height, CV_32FC1);
+Mat element_subtract(Mat input_mat_1, Mat input_mat_2) {
+    int width   = input_mat_1.cols;
+    int height  = input_mat_1.rows;
+    Mat output_mat = Mat::zeros(input_mat_1.size(), CV_32FC1);
     float* output = (float*)output_mat.data;
+    float* input_1 = (float*)input_mat_1.data;
+    float* input_2 = (float*)input_mat_2.data;
 
     #pragma omp parallel for
     for(int ii = 0; ii < width * height; ++ii) {
@@ -90,9 +104,14 @@ Mat element_subtract(float* input_1, float* input_2, int width, int height) {
     return output_mat;
 }
 
-Mat element_add(float* input_1, float* input_2, int width, int height) {
-    Mat output_mat = Mat::zeros(width, height, CV_32FC1);
+Mat element_add(Mat input_mat_1, Mat input_mat_2) {
+    int width   = input_mat_1.cols;
+    int height  = input_mat_1.rows;
+    Mat output_mat = Mat::zeros(input_mat_1.size(), CV_32FC1);
     float* output = (float*)output_mat.data;
+    float* input_1 = (float*)input_mat_1.data;
+    float* input_2 = (float*)input_mat_2.data;
+
     #pragma omp parallel for
     for(int ii = 0; ii < width * height; ++ii) {
         output[ii] = input_1[ii] + input_2[ii];
