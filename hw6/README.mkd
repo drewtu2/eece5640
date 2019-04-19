@@ -18,7 +18,7 @@ direction) which may be realtively small compared to the branch overheads.
 From the timing however, we still see that the `shared_stencil` 
 implementation runs slightly faster than the naive implementaiton. 
 
-![timing]("figures/16x16x1.png")
+![timing](figures/16x16x1.png)
 
 The use of tiling, seperate from shared memory is also interesting to explore. 
 The above nvprof shows the timing from a 16x16x1 tiled implementation where tiles
@@ -27,7 +27,7 @@ two implemenations was on the order of 300-400 us. By comparison, tiling with a
 tile size of 1x1x1 (i.e. no tiling) runs on the order of 7ms!. A significant slow
 down. 
 
-![timing 1x1x1]("figures/1x1x1.png")
+![timing 1x1x1](figures/1x1x1.png)
 
 Tiling through the use of large block sizes helps speed up the runtime for a
 number of reasons. Individual blocks correspond to a physical SM. Since SMs run
