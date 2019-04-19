@@ -14,6 +14,7 @@
 using namespace cv;
 using namespace std;
 
+extern void gpu_malloc();
 extern void gpu_function (unsigned char *input, 
                    float *output,
                    unsigned int height, 
@@ -57,6 +58,8 @@ void run_cpu(Mat input_image, const char* output_file, int num_threads = 0) {
 void run_gpu(Mat input_image, const char* output_file) {
     unsigned int height = input_image.rows;
     unsigned int width = input_image.cols;
+
+    gpu_malloc();
 
     Mat output = Mat::zeros(height, width, CV_32FC1);
 
@@ -102,10 +105,11 @@ int main( int argc, const char** argv ) {
     }
     
     //run_cpu(input_image, argv[2]);
-    for(int ii = -2; ii < 16; ++ii) {
-        run_cpu(input_image, argv[2], ii * 2);
-    }
+    //for(int ii = -2; ii < 16; ++ii) {
+    //    run_cpu(input_image, argv[2], ii * 2);
+    //}
         
+    run_gpu(input_image, argv[2]);
     run_gpu(input_image, argv[2]);
 
     return 0;

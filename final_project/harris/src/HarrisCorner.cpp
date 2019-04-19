@@ -83,13 +83,13 @@ void HarrisCorner::thresholding(std::vector<KeyPoint>& keypoints, InputArray inp
     int x, y;
     float response_value; 
     // Iterate over the entire image
-    #pragma omp parallel for
+    //#pragma omp parallel for
     for(int ii = 0; ii < width*height; ++ii) {
         x = ii % width;
         y = ii / width;
         response_value = response.at<float>(y, x);
         if (response_value > this->corner_response_threshold) {
-            #pragma omp critical
+            //#pragma omp critical
             {
                 keypoints.push_back(KeyPoint((float)x, (float)y, 3));
             }
