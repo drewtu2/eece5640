@@ -1,7 +1,7 @@
 #ifndef __common_h
 #define __common_h
 
-#define X_TILE_SIZE 16
+#define X_TILE_SIZE 1
 #define Y_TILE_SIZE 1
 #define Z_TILE_SIZE 1
 #define RADIUS 1
