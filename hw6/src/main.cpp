@@ -109,11 +109,10 @@ int main() {
     
     naive::launch_naive_stencil(a, b, n);
 
-    compare(cpu_a, a, true);
+    //compare(cpu_a, a, true);
     
     shared::launch_shared_stencil(a, b, n);
-    //
-    compare(cpu_a, a, true);
+    //compare(cpu_a, a, true);
 
     return 0;
 }

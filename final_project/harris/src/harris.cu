@@ -6,7 +6,7 @@
 #include <math.h>
 
 
-#define TILE_SIZE 16
+#define TILE_SIZE 8
 
 #define TIMER_CREATE(t)               \
   cudaEvent_t t##_start, t##_end;     \
@@ -28,17 +28,16 @@
   
 unsigned char *input_gpu;
 float *output_gpu;
+float *test;
 
 /*******************************************************/
 /*                 Cuda Error Function                 */
 /*******************************************************/
 inline cudaError_t checkCuda(cudaError_t result) {
-	#if defined(DEBUG) || defined(_DEBUG)
 		if (result != cudaSuccess) {
 			fprintf(stderr, "CUDA Runtime Error: %s\n", cudaGetErrorString(result));
 			exit(-1);
 		}
-	#endif
 		return result;
 }
 
@@ -83,6 +82,11 @@ __global__ void calculate_response(unsigned char *input,
     float response = abs(idet - (k * itrace * itrace));
 
     output[offset] = response;
+}
+
+void gpu_malloc() {
+    checkCuda(cudaMalloc((void**)&test, 100*sizeof(float)));
+    cudaFree(test);
 }
 
 void gpu_function (unsigned char *input, 

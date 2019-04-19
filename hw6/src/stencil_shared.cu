@@ -122,12 +122,12 @@ void shared::shared_stencil(float* a, float* b, int dim_size) {
     
     if(threadIdx.x < radius) {
         int l_idx1 = l_offset(threadIdx.x - radius, threadIdx.y, threadIdx.z, radius);
-        int l_idx2 = l_offset(threadIdx.x + blockDim.x, threadIdx.y, threadIdx.z, radius);
         int g_idx1 = offset(x - radius, y, z, dim_size);
 
         s[l_idx1] = b[g_idx1];
 
         if(blockIdx.x < gridDim.x - 1) {
+            int l_idx2 = l_offset(threadIdx.x + blockDim.x, threadIdx.y, threadIdx.z, radius);
             int g_idx2 = offset(x + blockDim.x, y, z, dim_size); // wrong
             s[l_idx2] = b[g_idx2];
         }
@@ -135,12 +135,12 @@ void shared::shared_stencil(float* a, float* b, int dim_size) {
     
     if(threadIdx.y < radius) {
         int l_idx1 = l_offset(threadIdx.x, threadIdx.y - radius, threadIdx.z, radius);
-        int l_idx2 = l_offset(threadIdx.x, threadIdx.y + blockDim.y, threadIdx.z, radius);
         int g_idx1 = offset(x, y - radius, z, dim_size);
         
         s[l_idx1] = b[g_idx1];
         
         if(blockIdx.y < gridDim.y - 1) {
+            int l_idx2 = l_offset(threadIdx.x, threadIdx.y + blockDim.y, threadIdx.z, radius);
             int g_idx2 = offset(x, y + blockDim.y , z, dim_size); // correct
             s[l_idx2] = b[g_idx2];
         }
@@ -148,12 +148,12 @@ void shared::shared_stencil(float* a, float* b, int dim_size) {
     
     if(threadIdx.z < radius) {
         int l_idx1 = l_offset(threadIdx.x, threadIdx.y, threadIdx.z - radius, radius);
-        int l_idx2 = l_offset(threadIdx.x, threadIdx.y, threadIdx.z + blockDim.z, radius);
         int g_idx1 = offset(x, y, z - radius, dim_size);
         
         s[l_idx1] = b[g_idx1];
         
         if(blockIdx.z < gridDim.z - 1) {
+            int l_idx2 = l_offset(threadIdx.x, threadIdx.y, threadIdx.z + blockDim.z, radius);
             int g_idx2 = offset(x, y, z + blockDim.z, dim_size);
             s[l_idx2] = b[g_idx2];
         }
